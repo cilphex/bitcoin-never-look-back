@@ -24,8 +24,6 @@
   var x = d3.scaleSqrt().rangeRound([0, innerWidth])
   var y = d3.scaleLog().rangeRound([innerHeight, 0])
 
-  // x.domain([0, 80])
-  // y.domain([0.1, 1000000])
   x.domain(d3.extent(data, (d) => d.index))
   y.domain(d3.extent(data, (d) => d.forwardMinimumPrice))
 
@@ -50,6 +48,10 @@
 
   //=======================================================
 
+  xTickVals = data
+    .filter(i => i.date.getMonth() == 0 && i.date.getDate() == 1)
+    .map(i => i.index)
+
   // X gridlines - Draw gridlines first to put beneath axis
   g.append('g')
     .attr('transform', `translate(0, ${innerHeight})`)
@@ -58,6 +60,7 @@
       d3.axisBottom(x)
         .tickSize(-innerHeight)
         .tickFormat('')
+        .tickValues(xTickVals)
     )
 
   // Y gridlines
@@ -73,7 +76,13 @@
   // Bottom axis - Date
   g.append('g')
     .attr('transform', `translate(0, ${innerHeight})`)
-    .call(d3.axisBottom(x))
+    .call(
+      d3.axisBottom(x)
+        .tickFormat((i) =>
+          moment(data[0].date).add(i, 'days').format('`YY')
+        )
+        .tickValues(xTickVals)
+    )
     .select('.domain')
 
   // Left axis - Price

@@ -33,17 +33,6 @@
     .x(d => x(d.date))
     .y(d => y(d.forwardMinimumPrice))
 
-  // Create forward minimum area
-  var forwardMinArea = d3.area()
-    .x(d => x(d.date))
-    .y0(innerHeight)
-    .y1(d => y(d.forwardMinimumPrice))
-
-  // Create regression line
-  var regressionLine = d3.line()
-    .x(d => x(d.date))
-    .y(d => y(d.regressionPrice))
-
   // X gridlines - Draw gridlines first to put beneath axis
   g.append('g')
     .attr('transform', `translate(0, ${innerHeight})`)
@@ -80,23 +69,17 @@
     .attr('text-anchor', 'end')
     .text('Price ($)')
 
-  // Append the forward minimum price area
-  g.append('path')
-    .datum(data)
-    .attr('fill', '#f6f6f6')
-    .attr('d', forwardMinArea)
-
-  // Append the forward minimum price line
+  // Append the price line
   g.append('path')
     .datum(data)
     .attr('fill', 'none')
     .attr('stroke', '#ccc')
     .attr('stroke-linejoin', 'round')
     .attr('stroke-linecap', 'round')
-    .attr('stroke-width', 1.5)
-    .attr('d', forwardMinLine)
+    .attr('stroke-width', 1)
+    .attr('d', priceLine)
 
-  // Append the price line
+  // Append the forward minimum price line
   g.append('path')
     .datum(data)
     .attr('fill', 'none')
@@ -104,17 +87,15 @@
     .attr('stroke-linejoin', 'round')
     .attr('stroke-linecap', 'round')
     .attr('stroke-width', 1.5)
-    .attr('d', priceLine)
+    .attr('d', forwardMinLine)
 
-  // Append the regression line
-  g.append('path')
-    .datum(data)
-    .attr('fill', 'none')
-    .attr('stroke', 'green')
-    .attr('stroke-linejoin', 'round')
-    .attr('stroke-linecap', 'round')
-    .attr('stroke-width', 2)
-    .style('opacity', 0.25)
-    .attr('d', regressionLine)
+  // Append a clip path for the chart area, so lines don't overflow
+  g.append('clipPath')
+    .attr('id', 'chart-area-clip')
+    .append('rect')
+    .attr('x', 0)
+    .attr('y', 0)
+    .attr('width', innerWidth)
+    .attr('height', innerHeight)
 
 })()

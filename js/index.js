@@ -72,3 +72,15 @@ data.forEach(item => {
   item.regressionPrice = regressionPriceFn(item.index)
   item.regressionNlb = regressionNlbFn(item.index)
 })
+
+const calculateStandardDeviation = () => {
+  const squaredDiffs = data.map(item =>
+    Math.pow(
+      (item.regressionNlb - item.log10forwardMinimumPrice),
+      2
+    )
+  )
+  const avg = sum(squaredDiffs) / squaredDiffs.length
+  const sigma = Math.sqrt(avg)
+  return sigma
+}
