@@ -15,6 +15,8 @@
   // Create and append the main group
   var g = svg.append('g')
     .attr('transform', `translate(${margin.left}, ${margin.top})`)
+    .attr('width', innerWidth)
+    .attr('height', innerHeight)
 
   //=======================================================
 
@@ -99,6 +101,15 @@
     .attr('stroke-width', 1.5)
     .attr('d', forwardMinLine)
 
+  // Append a clip path for the chart area, so lines don't overflow
+  g.append('clipPath')
+    .attr('id', 'chart-area-clip')
+    .append('rect')
+    .attr('x', 0)
+    .attr('y', 0)
+    .attr('width', innerWidth)
+    .attr('height', innerHeight)
+
   // Append the regression line
   g.append('path')
     .datum(data)
@@ -109,5 +120,6 @@
     .attr('stroke-width', 2)
     .style('opacity', 0.25)
     .attr('d', regressionLine)
+    .attr('clip-path', "url(#chart-area-clip)")
 
 })()
