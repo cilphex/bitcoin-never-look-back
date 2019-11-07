@@ -1,6 +1,6 @@
 (() => {
   // Vars for dimensions
-  const margin = { top: 15, right: 15, bottom: 30, left: 60 }
+  const margin = { top: 20, right: 20, bottom: 35, left: 75 }
   const width = 800
   const height = 400
   const innerWidth = width - margin.left - margin.right
@@ -11,6 +11,7 @@
     .append('svg')
     .attr('width', width)
     .attr('height', height)
+    .attr('class', 'chart-svg')
 
   // Create and append the main group
   var g = svg.append('g')
@@ -32,14 +33,17 @@
   //   .x(d => x(d.sqrtDaysPassed))
   //   .y(d => y(d.log10forwardMinimumPrice))
 
+  var xMax = 5000    // Days passed
+  var yMax = 1000000 // Price
+
   //=======================================================
 
   // Forward minimum line scales
   var x = d3.scaleSqrt().rangeRound([0, innerWidth])
   var y = d3.scaleLog().rangeRound([innerHeight, 0])
 
-  x.domain(d3.extent(data, (d) => d.index))
-  y.domain(d3.extent(data, (d) => d.forwardMinimumPrice))
+  x.domain([0, xMax])
+  y.domain([d3.min(data, (d) => d.forwardMinimumPrice), yMax]) // or, d.forwardMinimumPrice
 
   // Create forward minimum line
   var forwardMinLine = d3.line()
@@ -48,19 +52,28 @@
 
   //=======================================================
 
+  const regressionData = Array(5000).fill(null).map((val, i) => {
+    const index = i
+    const date = moment(data[0].date).add(i, 'days').toDate()
+    const sqrtDaysPassed = Math.sqrt(i)
+    const regressionNlb = regressionNlbFn(sqrtDaysPassed)
+
+    return { index, date, sqrtDaysPassed, regressionNlb }
+  })
+
   // Regression line scales
   var x2 = d3.scaleLinear().rangeRound([0, innerWidth])
   var y2 = d3.scaleLinear().rangeRound([innerHeight, 0])
 
-  x2.domain(d3.extent(data, (d) => d.sqrtDaysPassed))
-  y2.domain(d3.extent(data, (d) => d.log10forwardMinimumPrice))
+  x2.domain([0, Math.sqrt(xMax)])
+  y2.domain([d3.min(data, (d) => d.log10forwardMinimumPrice), Math.log10(yMax)]) // or, d.log10forwardMinimumPrice
 
   // Create regression line
   var regressionLine = d3.line()
     .x(d => x2(d.sqrtDaysPassed))
     .y(d => y2(d.regressionNlb))
 
-  const standardDeviation = calculateStandardDeviation()
+  const standardDeviation = dataStandardDeviation()
 
   var regressionLineTop = d3.line()
     .x(d => x2(d.sqrtDaysPassed))
@@ -72,7 +85,7 @@
 
   //=======================================================
 
-  xTickVals = data
+  xTickVals = regressionData
     .filter(i => i.date.getMonth() == 0 && i.date.getDate() == 1)
     .map(i => i.index)
 
@@ -107,15 +120,13 @@
         )
         .tickValues(xTickVals)
     )
-
-  // // Bottom axis - regression - index
-  // g.append('g')
-  //   .attr('transform', `translate(0, ${innerHeight - 25})`)
-  //   .attr('stroke', 'green')
-  //   .style('opacity', 0.5)
-  //   .call(
-  //     d3.axisBottom(x2)
-  //   )
+    .append('text')
+    .attr('fill', '#000')
+    .attr('x', 30)
+    .attr('y', 9)
+    .attr('dy', '0.71em')
+    .attr('text-anchor', 'end')
+    .text('Year')
 
   // Left axis - forward min - Price
   g.append('g')
@@ -131,21 +142,6 @@
     .attr('dy', '0.71em')
     .attr('text-anchor', 'end')
     .text('Price ($)')
-
-  // // Left axis - regression - Price
-  // g.append('g')
-  //   .attr('transform', `translate(50, 0)`)
-  //   .attr('stroke', 'green')
-  //   .style('opacity', 0.5)
-  //   .call(
-  //     d3.axisLeft(y2)
-  //   )
-  //   .append('text')
-  //   .attr('transform', 'rotate(-90)')
-  //   .attr('y', 6)
-  //   .attr('dy', '0.71em')
-  //   .attr('text-anchor', 'end')
-  //   .text('??')
 
   // Append the path
   g.append('path')
@@ -168,7 +164,7 @@
 
   // Append the regression line
   g.append('path')
-    .datum(data)
+    .datum(regressionData)
     .attr('fill', 'none')
     .attr('stroke', 'green')
     .attr('stroke-linejoin', 'round')
@@ -180,7 +176,7 @@
 
   // Top variation
   g.append('path')
-    .datum(data)
+    .datum(regressionData)
     .attr('fill', 'none')
     .attr('stroke', 'red')
     .attr('stroke-linejoin', 'round')
@@ -192,7 +188,7 @@
 
   // Bottom variation
   g.append('path')
-    .datum(data)
+    .datum(regressionData)
     .attr('fill', 'none')
     .attr('stroke', 'red')
     .attr('stroke-linejoin', 'round')

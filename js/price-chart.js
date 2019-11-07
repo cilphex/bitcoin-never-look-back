@@ -1,6 +1,6 @@
 (() => {
   // Vars for dimensions
-  const margin = { top: 15, right: 15, bottom: 30, left: 50 }
+  const margin = { top: 20, right: 20, bottom: 35, left: 75 }
   const width = 800
   const height = 400
   const innerWidth = width - margin.left - margin.right
@@ -11,6 +11,7 @@
     .append('svg')
     .attr('width', width)
     .attr('height', height)
+    .attr('class', 'chart-svg')
 
   // Create and append the main group
   var g = svg.append('g')

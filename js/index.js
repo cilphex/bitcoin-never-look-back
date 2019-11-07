@@ -75,34 +75,27 @@ data.forEach(item => {
 
 
 
-
-const calculateStandardDeviation = () => {
-  const squaredDiffs = data.map(item => {
-
-    // const val1 = item.forwardMinimumPrice
-    // const val2 = Math.pow(10, item.regressionNlb)
-
-    const val1 = item.log10forwardMinimumPrice
-    const val2 = item.regressionNlb
-
+// Calculate the standard deviation for the values in two sets of points
+//
+const standardDeviation = (vals1, vals2) => {
+  const squaredDiffs = vals1.map((val1, i) => {
+    const val2 = vals2[i]
     return Math.pow((val1 - val2), 2)
-  }).filter(item => item)
-
-  console.log('squaredDiffs', squaredDiffs)
+  })
 
   const avg = sum(squaredDiffs) / squaredDiffs.length
-
-  console.log('sum', sum(squaredDiffs))
-  console.log('length', squaredDiffs.length)
-  console.log('avg', avg)
-
-  const sigma = Math.sqrt(avg)
-  console.log('sigma', sigma)
-  return sigma
+  return Math.sqrt(avg)
 }
 
+// Get the standard deviation between the regression line and the
+// log/square-normal price line
+//
+const dataStandardDeviation = () => {
+  const vals1 = data.map(item => item.log10forwardMinimumPrice)
+  const vals2 = data.map(item => item.regressionNlb)
 
-
+  return standardDeviation(vals1, vals2)
+}
 
 
 
