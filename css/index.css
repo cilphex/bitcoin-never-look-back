@@ -35,7 +35,6 @@ h2 {
 
 div.footer {
   margin: 30px 0;
-  border-top: 1px solid #eee;
 }
 
 div.chart {
@@ -54,4 +53,35 @@ div.chart {
 .grid line {
   stroke-width: 1px;
   stroke: #eee;
+}
+
+.axis-text {
+  fill: #000;
+}
+
+.path-line {
+  fill: none;
+  stroke: #000;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  stroke-width: 1.5;
+}
+
+.path-price {
+  stroke: #ccc;
+  stroke-width: 1;
+}
+
+.path-forward-min-price {
+  stroke: steelblue;
+}
+
+.path-regression {
+  stroke: green;
+  opacity: 0.3;
+}
+
+.path-regression-std-dev {
+  stroke: red;
+  opacity: 0.15;
 }

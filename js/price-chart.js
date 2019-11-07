@@ -57,13 +57,12 @@
   g.append('g')
     .attr('transform', `translate(0, ${innerHeight})`)
     .call(d3.axisBottom(x))
-    .select('.domain')
 
   // Left axis - Price
   g.append('g')
     .call(d3.axisLeft(y))
     .append('text')
-    .attr('fill', '#000')
+    .attr('class', 'axis-text')
     .attr('transform', 'rotate(-90)')
     .attr('y', 6)
     .attr('dy', '0.71em')
@@ -73,21 +72,13 @@
   // Append the price line
   g.append('path')
     .datum(data)
-    .attr('fill', 'none')
-    .attr('stroke', '#ccc')
-    .attr('stroke-linejoin', 'round')
-    .attr('stroke-linecap', 'round')
-    .attr('stroke-width', 1)
+    .attr('class', 'path-line path-price')
     .attr('d', priceLine)
 
   // Append the forward minimum price line
   g.append('path')
     .datum(data)
-    .attr('fill', 'none')
-    .attr('stroke', 'steelblue')
-    .attr('stroke-linejoin', 'round')
-    .attr('stroke-linecap', 'round')
-    .attr('stroke-width', 1.5)
+    .attr('class', 'path-line path-forward-min-price')
     .attr('d', forwardMinLine)
 
 })()

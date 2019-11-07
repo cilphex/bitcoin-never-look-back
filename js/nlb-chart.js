@@ -21,7 +21,7 @@
 
   //=======================================================
 
-  // // Forward minimum line scales
+  // // Forward minimum line scales - Alternative graphing method
   // var x = d3.scaleLinear().rangeRound([0, innerWidth])
   // var y = d3.scaleLinear().rangeRound([innerHeight, 0])
 
@@ -121,7 +121,7 @@
         .tickValues(xTickVals)
     )
     .append('text')
-    .attr('fill', '#000')
+    .attr('class', 'axis-text')
     .attr('x', 30)
     .attr('y', 9)
     .attr('dy', '0.71em')
@@ -136,7 +136,7 @@
         .tickValues([0.1, 1, 10, 100, 1000, 10000, 100000, 1000000])
     )
     .append('text')
-    .attr('fill', '#000')
+    .attr('class', 'axis-text')
     .attr('transform', 'rotate(-90)')
     .attr('y', 6)
     .attr('dy', '0.71em')
@@ -146,11 +146,7 @@
   // Append the path
   g.append('path')
     .datum(data)
-    .attr('fill', 'none')
-    .attr('stroke', 'steelblue')
-    .attr('stroke-linejoin', 'round')
-    .attr('stroke-linecap', 'round')
-    .attr('stroke-width', 1.5)
+    .attr('class', 'path-line path-forward-min-price')
     .attr('d', forwardMinLine)
 
   // Append a clip path for the chart area, so lines don't overflow
@@ -165,37 +161,22 @@
   // Append the regression line
   g.append('path')
     .datum(regressionData)
-    .attr('fill', 'none')
-    .attr('stroke', 'green')
-    .attr('stroke-linejoin', 'round')
-    .attr('stroke-linecap', 'round')
-    .attr('stroke-width', 2)
-    .style('opacity', 0.3)
-    .attr('d', regressionLine)
+    .attr('class', 'path-line path-regression')
     .attr('clip-path', "url(#chart-area-clip)")
+    .attr('d', regressionLine)
 
   // Top variation
   g.append('path')
     .datum(regressionData)
-    .attr('fill', 'none')
-    .attr('stroke', 'red')
-    .attr('stroke-linejoin', 'round')
-    .attr('stroke-linecap', 'round')
-    .attr('stroke-width', 2)
-    .style('opacity', 0.15)
-    .attr('d', regressionLineTop)
+    .attr('class', 'path-line path-regression-std-dev')
     .attr('clip-path', "url(#chart-area-clip)")
+    .attr('d', regressionLineTop)
 
   // Bottom variation
   g.append('path')
     .datum(regressionData)
-    .attr('fill', 'none')
-    .attr('stroke', 'red')
-    .attr('stroke-linejoin', 'round')
-    .attr('stroke-linecap', 'round')
-    .attr('stroke-width', 2)
-    .style('opacity', 0.15)
-    .attr('d', regressionLineBottom)
+    .attr('class', 'path-line path-regression-std-dev')
     .attr('clip-path', "url(#chart-area-clip)")
+    .attr('d', regressionLineBottom)
 
 })()
