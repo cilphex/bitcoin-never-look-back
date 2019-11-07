@@ -70,17 +70,57 @@ const regressionNlbFn = linearRegression(
 
 data.forEach(item => {
   item.regressionPrice = regressionPriceFn(item.index)
-  item.regressionNlb = regressionNlbFn(item.index)
+  item.regressionNlb = regressionNlbFn(item.sqrtDaysPassed)
 })
 
+
+
+
 const calculateStandardDeviation = () => {
-  const squaredDiffs = data.map(item =>
-    Math.pow(
-      (item.regressionNlb - item.log10forwardMinimumPrice),
-      2
-    )
-  )
+  const squaredDiffs = data.map(item => {
+
+    // const val1 = item.forwardMinimumPrice
+    // const val2 = Math.pow(10, item.regressionNlb)
+
+    const val1 = item.log10forwardMinimumPrice
+    const val2 = item.regressionNlb
+
+    return Math.pow((val1 - val2), 2)
+  }).filter(item => item)
+
+  console.log('squaredDiffs', squaredDiffs)
+
+  const avg = sum(squaredDiffs) / squaredDiffs.length
+
+  console.log('sum', sum(squaredDiffs))
+  console.log('length', squaredDiffs.length)
+  console.log('avg', avg)
+
+  const sigma = Math.sqrt(avg)
+  console.log('sigma', sigma)
+  return sigma
+}
+
+
+
+
+
+
+
+
+
+
+const calcSigma = (vals) => {
+  const mean = sum(vals) / vals.length
+
+  const squaredDiffs = vals.map(val => Math.pow((val - mean), 2))
+
   const avg = sum(squaredDiffs) / squaredDiffs.length
   const sigma = Math.sqrt(avg)
   return sigma
 }
+
+
+
+
+

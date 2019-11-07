@@ -89,13 +89,4 @@
     .attr('stroke-width', 1.5)
     .attr('d', forwardMinLine)
 
-  // Append a clip path for the chart area, so lines don't overflow
-  g.append('clipPath')
-    .attr('id', 'chart-area-clip')
-    .append('rect')
-    .attr('x', 0)
-    .attr('y', 0)
-    .attr('width', innerWidth)
-    .attr('height', innerHeight)
-
 })()

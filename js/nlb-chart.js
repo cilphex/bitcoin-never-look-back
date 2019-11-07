@@ -20,6 +20,20 @@
 
   //=======================================================
 
+  // // Forward minimum line scales
+  // var x = d3.scaleLinear().rangeRound([0, innerWidth])
+  // var y = d3.scaleLinear().rangeRound([innerHeight, 0])
+
+  // x.domain(d3.extent(data, (d) => d.sqrtDaysPassed))
+  // y.domain(d3.extent(data, (d) => d.log10forwardMinimumPrice))
+
+  // // Create forward minimum line
+  // var forwardMinLine = d3.line()
+  //   .x(d => x(d.sqrtDaysPassed))
+  //   .y(d => y(d.log10forwardMinimumPrice))
+
+  //=======================================================
+
   // Forward minimum line scales
   var x = d3.scaleSqrt().rangeRound([0, innerWidth])
   var y = d3.scaleLog().rangeRound([innerHeight, 0])
@@ -43,8 +57,18 @@
 
   // Create regression line
   var regressionLine = d3.line()
-    .x(d => x2(d.index))
+    .x(d => x2(d.sqrtDaysPassed))
     .y(d => y2(d.regressionNlb))
+
+  const standardDeviation = calculateStandardDeviation()
+
+  var regressionLineTop = d3.line()
+    .x(d => x2(d.sqrtDaysPassed))
+    .y(d => y2(d.regressionNlb + standardDeviation))
+
+  var regressionLineBottom = d3.line()
+    .x(d => x2(d.sqrtDaysPassed))
+    .y(d => y2(d.regressionNlb - standardDeviation))
 
   //=======================================================
 
@@ -73,7 +97,7 @@
         .tickFormat('')
     )
 
-  // Bottom axis - Date
+  // Bottom axis - forward min - Date
   g.append('g')
     .attr('transform', `translate(0, ${innerHeight})`)
     .call(
@@ -83,9 +107,17 @@
         )
         .tickValues(xTickVals)
     )
-    .select('.domain')
 
-  // Left axis - Price
+  // // Bottom axis - regression - index
+  // g.append('g')
+  //   .attr('transform', `translate(0, ${innerHeight - 25})`)
+  //   .attr('stroke', 'green')
+  //   .style('opacity', 0.5)
+  //   .call(
+  //     d3.axisBottom(x2)
+  //   )
+
+  // Left axis - forward min - Price
   g.append('g')
     .call(
       d3.axisLeft(y)
@@ -99,6 +131,21 @@
     .attr('dy', '0.71em')
     .attr('text-anchor', 'end')
     .text('Price ($)')
+
+  // // Left axis - regression - Price
+  // g.append('g')
+  //   .attr('transform', `translate(50, 0)`)
+  //   .attr('stroke', 'green')
+  //   .style('opacity', 0.5)
+  //   .call(
+  //     d3.axisLeft(y2)
+  //   )
+  //   .append('text')
+  //   .attr('transform', 'rotate(-90)')
+  //   .attr('y', 6)
+  //   .attr('dy', '0.71em')
+  //   .attr('text-anchor', 'end')
+  //   .text('??')
 
   // Append the path
   g.append('path')
@@ -127,8 +174,32 @@
     .attr('stroke-linejoin', 'round')
     .attr('stroke-linecap', 'round')
     .attr('stroke-width', 2)
-    .style('opacity', 0.25)
+    .style('opacity', 0.3)
     .attr('d', regressionLine)
+    .attr('clip-path', "url(#chart-area-clip)")
+
+  // Top variation
+  g.append('path')
+    .datum(data)
+    .attr('fill', 'none')
+    .attr('stroke', 'red')
+    .attr('stroke-linejoin', 'round')
+    .attr('stroke-linecap', 'round')
+    .attr('stroke-width', 2)
+    .style('opacity', 0.15)
+    .attr('d', regressionLineTop)
+    .attr('clip-path', "url(#chart-area-clip)")
+
+  // Bottom variation
+  g.append('path')
+    .datum(data)
+    .attr('fill', 'none')
+    .attr('stroke', 'red')
+    .attr('stroke-linejoin', 'round')
+    .attr('stroke-linecap', 'round')
+    .attr('stroke-width', 2)
+    .style('opacity', 0.15)
+    .attr('d', regressionLineBottom)
     .attr('clip-path', "url(#chart-area-clip)")
 
 })()
