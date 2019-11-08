@@ -1,6 +1,6 @@
 ﻿// "Date", "Price", "Open", "High", "Low", "Vol.", "Change %"
 
-data = [
+const data = [
   { date: "Oct 18, 2019", price: "7,930.1", open: "8,073.3", high: "8,116.4", low: "7,842.0", vol: "505.69K", change: "-1.77%" },
   { date: "Oct 17, 2019", price: "8,073.3", open: "8,000.4", high: "8,118.2", low: "7,944.4", vol: "444.95K", change: "0.91%" },
   { date: "Oct 16, 2019", price: "8,000.4", open: "8,167.1", high: "8,185.9", low: "7,929.8", vol: "538.92K", change: "-2.04%" },
@@ -3382,3 +3382,5 @@ data = [
   { date: "Jul 19, 2010", price: "0.1", open: "0.1", high: "0.1", low: "0.1", vol: "0.57K", change: "0.00%" },
   { date: "Jul 18, 2010", price: "0.1", open: "0.0", high: "0.1", low: "0.1", vol: "0.08K", change: "0.00%" },
 ]
+
+export default data;

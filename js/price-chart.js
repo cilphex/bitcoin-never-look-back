@@ -1,4 +1,6 @@
-(() => {
+import data from './data.js'
+
+const drawChart = () => {
   // Vars for dimensions
   const margin = { top: 20, right: 20, bottom: 35, left: 75 }
   const width = 800
@@ -81,4 +83,8 @@
     .attr('class', 'path-line path-forward-min-price')
     .attr('d', forwardMinLine)
 
-})()
+}
+
+export {
+  drawChart
+}

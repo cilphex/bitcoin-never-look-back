@@ -1,6 +1,8 @@
+import data from './data.js'
 import moment from './moment.js'
+import { regressionNlbFn, dataStandardDeviation } from './util.js'
 
-(() => {
+const drawChart = () => {
   // Vars for dimensions
   const margin = { top: 20, right: 20, bottom: 35, left: 75 }
   const width = 800
@@ -181,4 +183,8 @@ import moment from './moment.js'
     .attr('clip-path', "url(#chart-area-clip)")
     .attr('d', regressionLineBottom)
 
-})()
+}
+
+export {
+  drawChart
+}

@@ -1,3 +1,5 @@
+import data from './data.js'
+
 // Helper methods
 const sum = (values) => values.reduce((a, b) => a + b, 0)
 
@@ -97,22 +99,10 @@ const dataStandardDeviation = () => {
   return standardDeviation(vals1, vals2)
 }
 
-
-
-
-
-
-
-const calcSigma = (vals) => {
-  const mean = sum(vals) / vals.length
-
-  const squaredDiffs = vals.map(val => Math.pow((val - mean), 2))
-
-  const avg = sum(squaredDiffs) / squaredDiffs.length
-  const sigma = Math.sqrt(avg)
-  return sigma
+export {
+  regressionNlbFn,
+  dataStandardDeviation
 }
-
 
 
 
