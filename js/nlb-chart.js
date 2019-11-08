@@ -1,3 +1,5 @@
+import moment from './moment.js'
+
 (() => {
   // Vars for dimensions
   const margin = { top: 20, right: 20, bottom: 35, left: 75 }
@@ -85,7 +87,7 @@
 
   //=======================================================
 
-  xTickVals = regressionData
+  const xTickVals = regressionData
     .filter(i => i.date.getMonth() == 0 && i.date.getDate() == 1)
     .map(i => i.index)
 

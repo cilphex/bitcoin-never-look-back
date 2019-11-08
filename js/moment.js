@@ -1,10 +1,6 @@
-//! moment.js
+//! moment.js - modified to module format 11/8/2019
 
-;(function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-    typeof define === 'function' && define.amd ? define(factory) :
-    global.moment = factory()
-}(this, (function () { 'use strict';
+const factory = function () { 'use strict';
 
     var hookCallback;
 
@@ -4599,4 +4595,6 @@
 
     return hooks;
 
-})));
+};
+
+export default factory()
