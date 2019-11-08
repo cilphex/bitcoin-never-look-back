@@ -1,6 +1,7 @@
 import data from './data.js'
 import moment from './moment.js'
 import { regressionNlbFn, dataStandardDeviation } from './util.js'
+import d3 from './d3.js'
 
 const drawChart = () => {
   // Vars for dimensions

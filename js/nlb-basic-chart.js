@@ -1,4 +1,5 @@
 import data from './data.js'
+import d3 from './d3.js'
 
 const drawChart = () => {
   // Vars for dimensions

@@ -1,5 +1,5 @@
-import { drawChart as drawPriceChart } from './price-chart.js'
-import { drawChart as drawNlbChart } from './nlb-chart.js'
+import { drawChart as drawBasicChart } from './nlb-basic-chart.js'
+import { drawChart as drawRegressionChart } from './nlb-regression-chart.js'
 
-drawPriceChart()
-drawNlbChart()
+drawBasicChart()
+drawRegressionChart()
