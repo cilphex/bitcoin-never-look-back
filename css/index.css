@@ -44,7 +44,6 @@ div.footer {
 
 div.chart-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   margin: 30px 0 10px;
 }
@@ -54,6 +53,10 @@ div.chart-header h2 {
 }
 
 div.chart-data {
+  flex-grow: 1;
+  display: flex;
+  justify-content: space-between;
+  margin-left: 20px;
   font-size: 14px;
   color: #888;
   visibility: hidden;
@@ -248,8 +251,8 @@ div.data-points tr.expected {
 }
 
 div.data-points tr.deviation {
-  color: #ff0000;
-  opacity: 0.6;
+  color: #ff699c;
+  opacity: 0.8;
 }
 
 div.data-points td {

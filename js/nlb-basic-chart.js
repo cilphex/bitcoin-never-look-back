@@ -1,4 +1,5 @@
 import d3 from './d3.js'
+import moment from './moment.js'
 import { moneyFormat } from './util.js'
 
 const drawChart = (chartData) => {
@@ -149,6 +150,8 @@ const drawChart = (chartData) => {
       .textContent = moneyFormat(item.price)
     document.querySelector('#basic_chart_data .forward-minimum')
       .textContent = moneyFormat(item.forwardMinimumPrice)
+    document.querySelector('#basic_chart_data .date')
+      .textContent = moment(item.date).format('MMM D, YYYY')
   }
 }
 

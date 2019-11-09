@@ -264,6 +264,8 @@ const drawChart = (chartData) => {
       .textContent = moneyFormat(regressionPriceMax)
     document.querySelector('#regression_chart_data .d-min')
       .textContent = moneyFormat(regressionPriceMin)
+    document.querySelector('#regression_chart_data .date')
+      .textContent = moment(item.date).format('MMM D, YYYY')
   }
 }
 
