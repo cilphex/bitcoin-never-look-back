@@ -36,6 +36,8 @@ h2 {
 
 div.footer {
   margin: 30px 0;
+  padding: 10px 0;
+  border-top: 1px solid #eee;
 }
 
 div.chart {
@@ -46,7 +48,6 @@ div.slider-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  /*margin: 20px 0;*/
   height: 20px; /* Height of the slider thumb. */
 }
 
@@ -73,7 +74,6 @@ div.slider-container input[type="range"]::-webkit-slider-thumb {
   background: #fff;
   border: 2px solid #eee;
   border-radius: 100px;
-  /*box-shadow: 0 2px 5px rgba(0,0,0,0.25);*/
 }
 
 div.slider-container input[type="range"]:hover::-webkit-slider-thumb {
@@ -126,4 +126,61 @@ div.slider-container input[type="range"]:hover::-webkit-slider-thumb {
 .path-regression-std-dev {
   stroke: #ff0000;
   opacity: 0.2;
+}
+
+div.data-points {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+}
+
+div.data-points > div {
+  flex-grow: 1;
+  margin-right: 10px;
+  padding: 15px;
+  background: #fafafa;
+  border: 1px solid #eee;
+}
+
+div.data-points > div:last-child {
+  margin: 0;
+}
+
+div.data-points > div h3 {
+  margin: 0 0 10px;
+  font-size: 14px;
+  color: #000;
+  text-transform: uppercase;
+}
+
+div.data-points table {
+  width: 100%;
+}
+
+div.data-points tr:last-child {
+  border: none;
+}
+
+div.data-points tr.expected {
+  font-weight: bold;
+  color: #03a9f4;
+}
+
+div.data-points tr.deviation {
+  color: #ff0000;
+  opacity: 0.6;
+}
+
+div.data-points td {
+  padding: 10px 0;
+  font-size: 14px;
+  border-bottom: 1px dotted #ddd;
+}
+
+div.data-points td:last-child {
+  text-align: right;
+}
+
+div.data-points tr:last-child td {
+  border: none;
 }

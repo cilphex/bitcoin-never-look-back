@@ -26,8 +26,8 @@ const drawChart = (chartData) => {
   var x = d3.scaleTime().rangeRound([0, innerWidth])
   var y = d3.scaleLinear().rangeRound([innerHeight, 0])
 
-  // x.domain([data[0].date, moment(data[0].date).add(4000, 'days').toDate()])
-  // y.domain([0, 100000])
+  // x.domain([data[0].date, moment(data[0].date).add(3000, 'days').toDate()])
+  // y.domain([0, 10000])
 
   x.domain(d3.extent(data, (d) => d.date))
   y.domain(d3.extent(data, (d) => d.price))
