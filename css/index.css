@@ -104,14 +104,16 @@ input.chart-range {
   appearance: none;
   width: 200px;
   height: 2px;
-  background: #eee;
+  background: #555;
   border-radius: 100px;
   outline: none;
   cursor: pointer;
+  opacity: 0.25;
 }
 
 input.chart-range:hover {
-  background: #03a9f4;
+  /*background: #03a9f4;*/
+  opacity: 1;
 }
 
 input.chart-range::-webkit-slider-thumb {
@@ -120,14 +122,14 @@ input.chart-range::-webkit-slider-thumb {
   width: 10px;
   height: 10px;
   background: #fff;
-  border: 2px solid #eee;
+  border: 2px solid #555;
   border-radius: 100px;
 }
 
 input.chart-range:hover::-webkit-slider-thumb {
   width: 20px;
   height: 20px;
-  border-color: #03a9f4;
+  /*border-color: #03a9f4;*/
 }
 
 .mouse-overlay {
