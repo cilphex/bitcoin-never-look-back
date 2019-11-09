@@ -1,6 +1,7 @@
 import Constants from './constants.js'
 import d3 from './d3.js'
 import moment from './moment.js'
+import { moneyFormat } from './util.js'
 
 const drawChart = (chartData) => {
   const {
@@ -35,40 +36,40 @@ const drawChart = (chartData) => {
   //===========================================================================
 
   // Forward minimum line scales
-  var x = d3.scaleSqrt().rangeRound([0, innerWidth])
-  var y = d3.scaleLog().rangeRound([innerHeight, 0])
+  var xScale = d3.scaleSqrt().rangeRound([0, innerWidth])
+  var yScale = d3.scaleLog().rangeRound([innerHeight, 0])
 
-  x.domain([0, xMax])
-  y.domain([d3.min(data, (d) => d.forwardMinimumPrice), yMax])
+  xScale.domain([0, xMax])
+  yScale.domain([d3.min(data, (d) => d.forwardMinimumPrice), yMax])
 
   // Create forward minimum line
   var forwardMinLine = d3.line()
-    .x(d => x(d.index))
-    .y(d => y(d.forwardMinimumPrice))
+    .x(d => xScale(d.index))
+    .y(d => yScale(d.forwardMinimumPrice))
 
   //===========================================================================
 
   // Regression line scales
-  var x2 = d3.scaleLinear().rangeRound([0, innerWidth])
-  var y2 = d3.scaleLinear().rangeRound([innerHeight, 0])
+  var xScale2 = d3.scaleLinear().rangeRound([0, innerWidth])
+  var yScale2 = d3.scaleLinear().rangeRound([innerHeight, 0])
 
-  x2.domain([0, Math.sqrt(xMax)])
-  y2.domain([d3.min(data, (d) => d.log10forwardMinimumPrice), Math.log10(yMax)])
+  xScale2.domain([0, Math.sqrt(xMax)])
+  yScale2.domain([d3.min(data, (d) => d.log10forwardMinimumPrice), Math.log10(yMax)])
 
   // Create regression lines
   var regressionLine = d3.line()
-    .x(d => x2(d.sqrtDaysPassed))
-    .y(d => y2(d.regressionNlb))
+    .x(d => xScale2(d.sqrtDaysPassed))
+    .y(d => yScale2(d.regressionNlb))
 
   // Standard deviation line - top
   var regressionLineTop = d3.line()
-    .x(d => x2(d.sqrtDaysPassed))
-    .y(d => y2(d.regressionNlb + standardDeviation))
+    .x(d => xScale2(d.sqrtDaysPassed))
+    .y(d => yScale2(d.regressionNlb + standardDeviation))
 
   // Standard deviation line - bottom
   var regressionLineBottom = d3.line()
-    .x(d => x2(d.sqrtDaysPassed))
-    .y(d => y2(d.regressionNlb - standardDeviation))
+    .x(d => xScale2(d.sqrtDaysPassed))
+    .y(d => yScale2(d.regressionNlb - standardDeviation))
 
   //=======================================================
 
@@ -85,7 +86,7 @@ const drawChart = (chartData) => {
     .attr('transform', `translate(0, ${innerHeight})`)
     .attr('class', 'grid')
     .call(
-      d3.axisBottom(x)
+      d3.axisBottom(xScale)
         .tickSize(-innerHeight)
         .tickFormat('')
         .tickValues(xTickVals)
@@ -95,7 +96,7 @@ const drawChart = (chartData) => {
   g.append('g')
     .attr('class', 'grid')
     .call(
-      d3.axisLeft(y)
+      d3.axisLeft(yScale)
         .tickValues(yTickValues)
         .tickSize(-innerWidth)
         .tickFormat('')
@@ -105,7 +106,7 @@ const drawChart = (chartData) => {
   g.append('g')
     .attr('transform', `translate(0, ${innerHeight})`)
     .call(
-      d3.axisBottom(x)
+      d3.axisBottom(xScale)
         .tickFormat((i) =>
           moment(data[0].date).add(i, 'days').format('`YY')
         )
@@ -122,7 +123,7 @@ const drawChart = (chartData) => {
   // Left axis - forward min - Price
   g.append('g')
     .call(
-      d3.axisLeft(y)
+      d3.axisLeft(yScale)
         .tickFormat(d3.format(",.1f"))
         .tickValues(yTickValues)
     )
@@ -169,6 +170,101 @@ const drawChart = (chartData) => {
     .attr('class', 'path-line path-regression-std-dev')
     .attr('clip-path', "url(#chart-area-clip)")
     .attr('d', regressionLineBottom)
+
+  // Append verticle line - must be appended to a group, not rect
+  const mouseLine = g.append('line')
+    .attr('class', 'mouse-line')
+    .attr('x1', 0)
+    .attr('y1', 0)
+    .attr('x2', 0)
+    .attr('y2', innerHeight)
+    .attr('visibility', 'hidden')
+
+  // Circles - must be appended to a group, not rect
+  const mouseCirclePrice = g.append('circle')
+    .attr('class', 'mouse-circle mouse-circle-price')
+    .attr('visibility', 'hidden')
+
+  const mouseCircleRegression = g.append('circle')
+    .attr('class', 'mouse-circle mouse-circle-regression')
+    .attr('visibility', 'hidden')
+
+  const mouseCircleRegressionMax = g.append('circle')
+    .attr('class', 'mouse-circle mouse-circle-deviation')
+    .attr('visibility', 'hidden')
+
+  const mouseCircleRegressionMin = g.append('circle')
+    .attr('class', 'mouse-circle mouse-circle-deviation')
+    .attr('visibility', 'hidden')
+
+  // Rect to catch mouse movements
+  const mouseArea = g.append('rect')
+    .attr('class', 'mouse-overlay')
+    .attr('width', innerWidth)
+    .attr('height', innerHeight)
+    .on('mouseover', mouseOver)
+    .on('mouseout', mouseOut)
+    .on('mousemove', mouseMove)
+
+  const bisectSqrtDaysPassed = d3.bisector((d) => d.sqrtDaysPassed).right
+
+  function mouseOver() {
+    g.select('.mouse-line').style('visibility', 'visible')
+    g.selectAll('.mouse-circle').style('visibility', 'visible')
+    document.querySelector('#regression_chart_data').style.visibility = 'visible'
+  }
+
+  function mouseOut() {
+    g.select('.mouse-line').style('visibility', 'hidden')
+    g.selectAll('.mouse-circle').style('visibility', 'hidden')
+    document.querySelector('#regression_chart_data').style.visibility = 'hidden'
+  }
+
+  function mouseMove() {
+    const mouse = d3.mouse(this)
+    const sqrtDaysPassed = xScale2.invert(mouse[0]) // map value from range to domain
+    const index = bisectSqrtDaysPassed(regressionData, sqrtDaysPassed) // get the index for the domain value
+    const item = regressionData[index]
+    const xPos = xScale2(sqrtDaysPassed)
+
+    if (!item) {
+      return
+    }
+
+    if (item.forwardMinimumPrice) {
+      const yPosPrice = yScale(item.forwardMinimumPrice)
+      g.select('.mouse-circle-price')
+        .style('visibility', 'visible')
+        .attr('transform', `translate(${xPos},${yPosPrice})`)
+      document.querySelector('#regression_chart_data .forward-minimum')
+        .textContent = moneyFormat(item.forwardMinimumPrice)
+    }
+    else {
+      g.select('.mouse-circle-price').style('visibility', 'hidden')
+      document.querySelector('#regression_chart_data .forward-minimum')
+        .textContent = '???'
+    }
+
+    const regressionPrice = Math.pow(10, item.regressionNlb)
+    const regressionPriceMax = Math.pow(10, item.regressionNlb + standardDeviation)
+    const regressionPriceMin = Math.pow(10, item.regressionNlb - standardDeviation)
+
+    const yPosRegression = yScale(regressionPrice)
+    const yPosRegressionMax = yScale(regressionPriceMax)
+    const yPosRegressionMin = yScale(regressionPriceMin)
+
+    mouseLine.attr('transform', `translate(${xPos},0)`)
+    mouseCircleRegression.attr('transform', `translate(${xPos},${yPosRegression})`)
+    mouseCircleRegressionMax.attr('transform', `translate(${xPos},${yPosRegressionMax})`)
+    mouseCircleRegressionMin.attr('transform', `translate(${xPos},${yPosRegressionMin})`)
+
+    document.querySelector('#regression_chart_data .expected')
+      .textContent = moneyFormat(regressionPrice)
+    document.querySelector('#regression_chart_data .d-max')
+      .textContent = moneyFormat(regressionPriceMax)
+    document.querySelector('#regression_chart_data .d-min')
+      .textContent = moneyFormat(regressionPriceMin)
+  }
 }
 
 export {

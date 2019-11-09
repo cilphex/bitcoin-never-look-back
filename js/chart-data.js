@@ -75,10 +75,18 @@ class ChartData {
       const index = i
       const date = moment(this.data[0].date).add(i, 'days').toDate()
       const price = this.data[i] && this.data[i].price
+      const forwardMinimumPrice = this.data[i] && this.data[i].forwardMinimumPrice
       const sqrtDaysPassed = Math.sqrt(i)
       const regressionNlb = this.regressionNlbFn(sqrtDaysPassed)
 
-      return { index, date, price, sqrtDaysPassed, regressionNlb }
+      return {
+        index,
+        date,
+        price,
+        forwardMinimumPrice,
+        sqrtDaysPassed,
+        regressionNlb
+      }
     })
   }
 
