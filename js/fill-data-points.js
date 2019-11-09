@@ -1,10 +1,6 @@
 import d3 from './d3.js'
 import moment from './moment.js'
-
-const moneyFormat = (num) => {
-  const formatted = num.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')
-  return `$${formatted}`
-}
+import { moneyFormat } from './util.js'
 
 const fillToday = (chartData) => {
   const { regressionData, standardDeviation } = chartData
