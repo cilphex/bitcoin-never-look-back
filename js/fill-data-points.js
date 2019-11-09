@@ -1,5 +1,5 @@
-import d3 from './d3.js'
-import moment from './moment.js'
+import d3 from './external/d3.js'
+import moment from './external/moment.js'
 import { moneyFormat } from './util.js'
 
 const fillToday = (chartData) => {

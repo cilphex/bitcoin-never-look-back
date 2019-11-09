@@ -1,6 +1,6 @@
 import Constants from './constants.js'
 import mathTools from './math-tools.js'
-import moment from './moment.js'
+import moment from './external/moment.js'
 
 class ChartData {
   constructor(rawData) {
