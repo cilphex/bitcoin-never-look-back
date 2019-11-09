@@ -71,7 +71,9 @@ class ChartData {
    * extrapolated on into the future.
    */
   getRegressionData() {
-    return Array(5000).fill(null).map((val, i) => {
+    const { maxDays } = Constants.regressionData
+
+    return Array(maxDays).fill(null).map((val, i) => {
       const index = i
       const date = moment(this.data[0].date).add(i, 'days').toDate()
       const price = this.data[i] && this.data[i].price

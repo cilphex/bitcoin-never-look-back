@@ -88,28 +88,42 @@ const drawChart = (chartData) => {
     .attr('text-anchor', 'end')
     .text('Price ($)')
 
+  // Append a clip path for the chart area, so lines don't overflow.
+  // Not really used much on this chart since it extends to the right bleed
+  g.append('clipPath')
+    .attr('id', 'extrapolation_chart_clip')
+    .append('rect')
+    .attr('x', 0)
+    .attr('y', 0)
+    .attr('width', innerWidth + margin.right)
+    .attr('height', innerHeight)
+
   // Append the price line
   g.append('path')
     .datum(data)
     .attr('class', 'path-line path-price')
+    .attr('clip-path', "url(#extrapolation_chart_clip)")
     .attr('d', priceLine)
 
   // Append the regression line
   g.append('path')
     .datum(regressionData)
     .attr('class', 'path-line path-regression')
+    .attr('clip-path', "url(#extrapolation_chart_clip)")
     .attr('d', extrapolationLine)
 
   // Top variation
   g.append('path')
     .datum(regressionData)
     .attr('class', 'path-line path-regression-std-dev')
+    .attr('clip-path', "url(#extrapolation_chart_clip)")
     .attr('d', extrapolationLineTop)
 
   // Bottom variation
   g.append('path')
     .datum(regressionData)
     .attr('class', 'path-line path-regression-std-dev')
+    .attr('clip-path', "url(#extrapolation_chart_clip)")
     .attr('d', extrapolationLineBottom)
 
   // Append verticle line - must be appended to a group, not rect

@@ -140,8 +140,9 @@ input.chart-range:hover::-webkit-slider-thumb {
 }
 
 .mouse-line {
-  stroke: #2ec135;
-  stroke-width: 1px;
+  stroke: #00ffcc;
+  stroke-width: 2px;
+  opacity: 0.5;
 }
 
 .mouse-circle {
@@ -260,11 +261,12 @@ div.data-points tr.deviation {
 div.data-points td {
   padding: 10px 0;
   font-size: 14px;
+  text-align: right;
   border-bottom: 1px solid #eee;
 }
 
-div.data-points td:last-child {
-  text-align: right;
+div.data-points td:first-child {
+  text-align: left;
 }
 
 div.data-points tr:last-child td {

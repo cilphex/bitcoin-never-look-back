@@ -141,9 +141,10 @@ const drawChart = (chartData) => {
     .attr('class', 'path-line path-forward-min-price')
     .attr('d', forwardMinLine)
 
-  // Append a clip path for the chart area, so lines don't overflow
+  // Append a clip path for the chart area, so lines don't overflow.
+  // Only really used for bottom clipping since right edge extends to bleed.
   g.append('clipPath')
-    .attr('id', 'chart-area-clip')
+    .attr('id', 'regression_chart_clip')
     .append('rect')
     .attr('x', 0)
     .attr('y', 0)
@@ -154,21 +155,21 @@ const drawChart = (chartData) => {
   g.append('path')
     .datum(regressionData)
     .attr('class', 'path-line path-regression')
-    .attr('clip-path', "url(#chart-area-clip)")
+    .attr('clip-path', "url(#regression_chart_clip)")
     .attr('d', regressionLine)
 
   // Top variation
   g.append('path')
     .datum(regressionData)
     .attr('class', 'path-line path-regression-std-dev')
-    .attr('clip-path', "url(#chart-area-clip)")
+    .attr('clip-path', "url(#regression_chart_clip)")
     .attr('d', regressionLineTop)
 
   // Bottom variation
   g.append('path')
     .datum(regressionData)
     .attr('class', 'path-line path-regression-std-dev')
-    .attr('clip-path', "url(#chart-area-clip)")
+    .attr('clip-path', "url(#regression_chart_clip)")
     .attr('d', regressionLineBottom)
 
   // Append verticle line - must be appended to a group, not rect
@@ -200,7 +201,7 @@ const drawChart = (chartData) => {
   // Rect to catch mouse movements
   const mouseArea = g.append('rect')
     .attr('class', 'mouse-overlay')
-    .attr('width', innerWidth)
+    .attr('width', innerWidth + margin.right)
     .attr('height', innerHeight)
     .on('mouseover', mouseOver)
     .on('mouseout', mouseOut)
