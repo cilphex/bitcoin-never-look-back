@@ -1,4 +1,5 @@
 import d3 from './d3.js'
+import { moneyFormat } from './util.js'
 
 const drawChart = (chartData) => {
   const data = chartData.data
@@ -22,28 +23,28 @@ const drawChart = (chartData) => {
     .attr('transform', `translate(${margin.left}, ${margin.top})`)
 
   // Create scales
-  var x = d3.scaleTime().rangeRound([0, innerWidth])
-  var y = d3.scaleLinear().rangeRound([innerHeight, 0])
+  var xScale = d3.scaleTime().rangeRound([0, innerWidth])
+  var yScale = d3.scaleLinear().rangeRound([innerHeight, 0])
 
-  x.domain(d3.extent(data, (d) => d.date))
-  y.domain(d3.extent(data, (d) => d.price))
+  xScale.domain(d3.extent(data, (d) => d.date))
+  yScale.domain(d3.extent(data, (d) => d.price))
 
   // Create price line
   var priceLine = d3.line()
-    .x(d => x(d.date))
-    .y(d => y(d.price))
+    .x(d => xScale(d.date))
+    .y(d => yScale(d.price))
 
   // Create forward minimum line
   var forwardMinLine = d3.line()
-    .x(d => x(d.date))
-    .y(d => y(d.forwardMinimumPrice))
+    .x(d => xScale(d.date))
+    .y(d => yScale(d.forwardMinimumPrice))
 
   // X gridlines - Draw gridlines first to put beneath axis
   g.append('g')
     .attr('transform', `translate(0, ${innerHeight})`)
     .attr('class', 'grid')
     .call(
-      d3.axisBottom(x)
+      d3.axisBottom(xScale)
         .tickSize(-innerHeight)
         .tickFormat('')
     )
@@ -52,7 +53,7 @@ const drawChart = (chartData) => {
   g.append('g')
     .attr('class', 'grid')
     .call(
-      d3.axisLeft(y)
+      d3.axisLeft(yScale)
         .tickSize(-innerWidth)
         .tickFormat('')
     )
@@ -60,11 +61,11 @@ const drawChart = (chartData) => {
   // Bottom axis - Date
   g.append('g')
     .attr('transform', `translate(0, ${innerHeight})`)
-    .call(d3.axisBottom(x))
+    .call(d3.axisBottom(xScale))
 
   // Left axis - Price
   g.append('g')
-    .call(d3.axisLeft(y))
+    .call(d3.axisLeft(yScale))
     .append('text')
     .attr('class', 'axis-text')
     .attr('transform', 'rotate(-90)')
@@ -84,6 +85,71 @@ const drawChart = (chartData) => {
     .datum(data)
     .attr('class', 'path-line path-forward-min-price')
     .attr('d', forwardMinLine)
+
+  // Append verticle line - must be appended to a group, not rect
+  const mouseLine = g.append('line')
+    .attr('class', 'mouse-line')
+    .attr('x1', 0)
+    .attr('y1', 0)
+    .attr('x2', 0)
+    .attr('y2', innerHeight)
+    .attr('visibility', 'hidden')
+
+  // Circles - must be appended to a group, not rect
+  const mouseCirclePrice = g.append('circle')
+    .attr('class', 'mouse-circle mouse-circle-price')
+    .attr('visibility', 'hidden')
+
+  const mouseCircleNlb = g.append('circle')
+    .attr('class', 'mouse-circle mouse-circle-nlb')
+    .attr('visibility', 'hidden')
+
+  // Rect to catch mouse movements
+  const mouseArea = g.append('rect')
+    .attr('class', 'mouse-overlay')
+    .attr('width', innerWidth)
+    .attr('height', innerHeight)
+    .on('mouseover', mouseOver)
+    .on('mouseout', mouseOut)
+    .on('mousemove', mouseMove)
+
+  const bisectDate = d3.bisector((d) => d.date).right
+
+  function mouseOver() {
+    g.select('.mouse-line').style('visibility', 'visible')
+    g.selectAll('.mouse-circle').style('visibility', 'visible')
+    document.querySelector('#basic_chart_data').style.visibility = 'visible'
+  }
+
+  function mouseOut() {
+    g.select('.mouse-line').style('visibility', 'hidden')
+    g.selectAll('.mouse-circle').style('visibility', 'hidden')
+    document.querySelector('#basic_chart_data').style.visibility = 'hidden'
+  }
+
+  function mouseMove() {
+    const mouse = d3.mouse(this)
+    const date = xScale.invert(mouse[0]) // map value from range to domain
+    const index = bisectDate(data, date, 1) // get the index for the domain value
+    const item = data[index]
+    const xPos = xScale(date)
+
+    if (!item) {
+      return
+    }
+
+    const yPosPrice = yScale(item.price)
+    const yPosForwardMinimum = yScale(item.forwardMinimumPrice)
+
+    mouseLine.attr('transform', `translate(${xPos},0)`)
+    mouseCirclePrice.attr('transform', `translate(${xPos},${yPosPrice})`)
+    mouseCircleNlb.attr('transform', `translate(${xPos},${yPosForwardMinimum})`)
+
+    document.querySelector('#basic_chart_data .price')
+      .textContent = moneyFormat(item.price)
+    document.querySelector('#basic_chart_data .forward-minimum')
+      .textContent = moneyFormat(item.forwardMinimumPrice)
+  }
 }
 
 export {

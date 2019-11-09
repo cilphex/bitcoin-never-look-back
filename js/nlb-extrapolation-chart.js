@@ -112,7 +112,7 @@ const drawChart = (chartData) => {
     .attr('class', 'path-line path-regression-std-dev')
     .attr('d', extrapolationLineBottom)
 
-  // Append verticle black line to mouse area - must be appended to a group, not rect
+  // Append verticle line - must be appended to a group, not rect
   const mouseLine = g.append('line')
     .attr('class', 'mouse-line')
     .attr('x1', 0)
@@ -121,7 +121,7 @@ const drawChart = (chartData) => {
     .attr('y2', innerHeight)
     .attr('visibility', 'hidden')
 
-  // Circle - must be appended to a group, not rect
+  // Circles - must be appended to a group, not rect
   const mouseCirclePrice = g.append('circle')
     .attr('class', 'mouse-circle mouse-circle-price')
     .attr('visibility', 'hidden')
@@ -167,6 +167,10 @@ const drawChart = (chartData) => {
     const index = bisectDate(regressionData, date, 1) // get the index for the domain value
     const item = regressionData[index]
     const xPos = xScale(date)
+
+    if (!item) {
+      return
+    }
 
     // Using regressionData instead of data and doing this check here lets
     // us make the regression lines overflow to the bleeding edge of the chart

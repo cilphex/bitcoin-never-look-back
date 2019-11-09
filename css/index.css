@@ -72,6 +72,7 @@ div.chart-data span.price {
   color: #555;
 }
 
+div.chart-data span.forward-minimum,
 div.chart-data span.expected {
   color: #03a9f4;
 }
@@ -146,6 +147,7 @@ input.chart-range:hover::-webkit-slider-thumb {
   opacity: 0.5;
 }
 
+.mouse-circle-nlb,
 .mouse-circle-regression {
   fill: #03a9f4;
 }

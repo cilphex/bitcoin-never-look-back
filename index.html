@@ -12,10 +12,24 @@
         <a href="https://medium.com/@cane.island/why-bitcoin-is-never-looking-back-f06ab333742e">this Medium article</a>.
       </p>
 
-      <h2>Basic NLB</h2>
+      <div class="chart-header">
+        <h2>Basic NLB</h2>
+        <div id="basic_chart_data" class="chart-data">
+          Price: <span class="price"></span>
+          NLB: <span class="forward-minimum"></span>
+        </div>
+      </div>
       <div id="price_chart" class="chart"></div>
 
-      <h2>Regression</h2>
+      <div class="chart-header">
+        <h2>Regression</h2>
+        <div id="regression_chart_data" class="chart-data">
+          NLB: <span class="forward-minimum"></span>
+          Expected: <span class="expected"></span>
+          Max: <span class="deviation d-max"></span>
+          Min: <span class="deviation d-min"></span>
+        </div>
+      </div>
       <div id="nlb_chart" class="chart"></div>
       <div class="slider-container">
         <input type="range" class="chart-range" min="1" max="100" value="50">
@@ -24,10 +38,10 @@
       <div class="chart-header">
         <h2>Extrapolation</h2>
         <div id="extrapolation_chart_data" class="chart-data">
-          Price: <span class="price">$8,000</span>
-          Expected: <span class="expected">$9,000</span>
-          Max: <span class="deviation d-max">$15,000</span>
-          Min: <span class="deviation d-min">$6,500</span>
+          Price: <span class="price"></span>
+          Expected: <span class="expected"></span>
+          Max: <span class="deviation d-max"></span>
+          Min: <span class="deviation d-min"></span>
         </div>
       </div>
       <div id="extrapolation_chart" class="chart"></div>
