@@ -84,6 +84,39 @@ div.slider-container input[type="range"]:hover::-webkit-slider-thumb {
   border-color: #03a9f4;
 }
 
+.mouse-overlay {
+  fill: none;
+  /* Lets this rect detect mouseover events even though it otherwise
+     wouldn't when fill=none */
+  pointer-events: all;
+}
+
+.mouse-line {
+  stroke: rgba(156,39,176,0.5);
+  stroke-width: 1px;
+  fill: red;
+}
+
+.mouse-circle {
+  r: 4;
+  fill: #000;
+  stroke-width: 0;
+}
+
+.mouse-circle-price {
+  fill: #888;
+  opacity: 0.5;
+}
+
+.mouse-circle-regression {
+  fill: #03a9f4;
+}
+
+.mouse-circle-deviation {
+  fill: red;
+  opacity: 0.3;
+}
+
 .chart-svg {
   background: #fafafa;
   border: 1px solid #eee;
@@ -121,7 +154,7 @@ div.slider-container input[type="range"]:hover::-webkit-slider-thumb {
 }
 
 .path-regression {
-  stroke: #00ff0a;
+  stroke: #00ff00;
   opacity: 0.3;
 }
 

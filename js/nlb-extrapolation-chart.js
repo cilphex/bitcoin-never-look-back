@@ -23,41 +23,43 @@ const drawChart = (chartData) => {
     .attr('transform', `translate(${margin.left}, ${margin.top})`)
 
   // Create scales
-  var x = d3.scaleTime().rangeRound([0, innerWidth])
-  var y = d3.scaleLinear().rangeRound([innerHeight, 0])
+  var xScale = d3.scaleTime().rangeRound([0, innerWidth])
+  var yScale = d3.scaleLinear().rangeRound([innerHeight, 0])
 
   // x.domain([data[0].date, moment(data[0].date).add(3000, 'days').toDate()])
   // y.domain([0, 10000])
 
-  x.domain(d3.extent(data, (d) => d.date))
-  y.domain(d3.extent(data, (d) => d.price))
+  xScale.domain(d3.extent(data, (d) => d.date))
+  yScale.domain(d3.extent(data, (d) => d.price))
+
+  console.log('extent', d3.extent(data, (d) => d.date))
 
   // Create price line
   var priceLine = d3.line()
-    .x(d => x(d.date))
-    .y(d => y(d.price))
+    .x(d => xScale(d.date))
+    .y(d => yScale(d.price))
 
   // Create extrapolation line
   var extrapolationLine = d3.line()
-    .x(d => x(d.date))
-    .y(d => y(Math.pow(10, d.regressionNlb)))
+    .x(d => xScale(d.date))
+    .y(d => yScale(Math.pow(10, d.regressionNlb)))
 
   // Create extrapolation line
   var extrapolationLineTop = d3.line()
-    .x(d => x(d.date))
-    .y(d => y(Math.pow(10, d.regressionNlb + standardDeviation)))
+    .x(d => xScale(d.date))
+    .y(d => yScale(Math.pow(10, d.regressionNlb + standardDeviation)))
 
   // Create extrapolation line
   var extrapolationLineBottom = d3.line()
-    .x(d => x(d.date))
-    .y(d => y(Math.pow(10, d.regressionNlb - standardDeviation)))
+    .x(d => xScale(d.date))
+    .y(d => yScale(Math.pow(10, d.regressionNlb - standardDeviation)))
 
   // X gridlines - Draw gridlines first to put beneath axis
   g.append('g')
     .attr('transform', `translate(0, ${innerHeight})`)
     .attr('class', 'grid')
     .call(
-      d3.axisBottom(x)
+      d3.axisBottom(xScale)
         .tickSize(-innerHeight)
         .tickFormat('')
     )
@@ -66,7 +68,7 @@ const drawChart = (chartData) => {
   g.append('g')
     .attr('class', 'grid')
     .call(
-      d3.axisLeft(y)
+      d3.axisLeft(yScale)
         .tickSize(-innerWidth)
         .tickFormat('')
     )
@@ -74,11 +76,11 @@ const drawChart = (chartData) => {
   // Bottom axis - Date
   g.append('g')
     .attr('transform', `translate(0, ${innerHeight})`)
-    .call(d3.axisBottom(x))
+    .call(d3.axisBottom(xScale))
 
   // Left axis - Price
   g.append('g')
-    .call(d3.axisLeft(y))
+    .call(d3.axisLeft(yScale))
     .append('text')
     .attr('class', 'axis-text')
     .attr('transform', 'rotate(-90)')
@@ -110,6 +112,71 @@ const drawChart = (chartData) => {
     .datum(regressionData)
     .attr('class', 'path-line path-regression-std-dev')
     .attr('d', extrapolationLineBottom)
+
+  // Append verticle black line to mouse area - must be appended to a group, not rect
+  const mouseLine = g.append('line')
+    .attr('class', 'mouse-line')
+    .attr('x1', 0)
+    .attr('y1', 0)
+    .attr('x2', 0)
+    .attr('y2', innerHeight)
+    .attr('visibility', 'hidden')
+
+  // Circle - must be appended to a group, not rect
+  const mouseCirclePrice = g.append('circle')
+    .attr('class', 'mouse-circle mouse-circle-price')
+    .attr('visibility', 'hidden')
+
+  const mouseCircleRegression = g.append('circle')
+    .attr('class', 'mouse-circle mouse-circle-regression')
+    .attr('visibility', 'hidden')
+
+  const mouseCircleRegressionMax = g.append('circle')
+    .attr('class', 'mouse-circle mouse-circle-deviation')
+    .attr('visibility', 'hidden')
+
+  const mouseCircleRegressionMin = g.append('circle')
+    .attr('class', 'mouse-circle mouse-circle-deviation')
+    .attr('visibility', 'hidden')
+
+  // Rect to catch mouse movements
+  const mouseArea = g.append('rect')
+    .attr('class', 'mouse-overlay')
+    .attr('width', innerWidth)
+    .attr('height', innerHeight)
+    .on('mouseover', mouseOver)
+    .on('mouseout', mouseOut)
+    .on('mousemove', mouseMove)
+
+  const bisectDate = d3.bisector((d) => d.date).right
+
+  function mouseOver() {
+    g.selectAll('.mouse-line').style('visibility', 'visible')
+    g.selectAll('.mouse-circle').style('visibility', 'visible')
+  }
+
+  function mouseOut() {
+    g.select('.mouse-line').style('visibility', 'hidden')
+    g.select('.mouse-circle').style('visibility', 'hidden')
+  }
+
+  function mouseMove() {
+    const mouse = d3.mouse(this)
+    const date = xScale.invert(mouse[0]) // map value from range to domain
+    const index = bisectDate(data, date, 1) // get the index for the domain value
+    const item = data[index]
+    const xPos = xScale(date)
+    const yPosPrice = yScale(item.price)
+    const yPosRegression = yScale(Math.pow(10, item.regressionNlb))
+    const yPosRegressionMax = yScale(Math.pow(10, item.regressionNlb + standardDeviation))
+    const yPosRegressionMin = yScale(Math.pow(10, item.regressionNlb - standardDeviation))
+
+    mouseLine.attr('transform', `translate(${xPos},0)`)
+    mouseCirclePrice.attr('transform', `translate(${xPos},${yPosPrice})`)
+    mouseCircleRegression.attr('transform', `translate(${xPos},${yPosRegression})`)
+    mouseCircleRegressionMax.attr('transform', `translate(${xPos},${yPosRegressionMax})`)
+    mouseCircleRegressionMin.attr('transform', `translate(${xPos},${yPosRegressionMin})`)
+  }
 }
 
 export {
