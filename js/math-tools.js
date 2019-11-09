@@ -12,7 +12,7 @@ const multiplyVals = (vals1, vals2) => {
 }
 
 /**
- * Return a function in the form of x=(a+b*x), which will return the y value
+ * Return a function in the form of y=(a+b*x), which will return the y value
  * on a linear regression line for a given x value
  */
 const linearRegression = (xVals, yVals) => {
