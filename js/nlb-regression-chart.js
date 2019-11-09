@@ -9,6 +9,9 @@ const drawChart = (chartData) => {
     standardDeviation
   } = chartData
 
+  // X and Y limits for the chart
+  const { xMax, yMax } = Constants.regressionChart
+
   // Vars for dimensions
   const margin = { top: 20, right: 20, bottom: 35, left: 75 }
   const width = 800
@@ -29,63 +32,53 @@ const drawChart = (chartData) => {
     .attr('width', innerWidth)
     .attr('height', innerHeight)
 
-  //=======================================================
-
-  // // Forward minimum line scales - Alternative graphing method
-  // var x = d3.scaleLinear().rangeRound([0, innerWidth])
-  // var y = d3.scaleLinear().rangeRound([innerHeight, 0])
-
-  // x.domain(d3.extent(data, (d) => d.sqrtDaysPassed))
-  // y.domain(d3.extent(data, (d) => d.log10forwardMinimumPrice))
-
-  // // Create forward minimum line
-  // var forwardMinLine = d3.line()
-  //   .x(d => x(d.sqrtDaysPassed))
-  //   .y(d => y(d.log10forwardMinimumPrice))
-
-  const { xMax, yMax } = Constants.regressionChart
-
-  //=======================================================
+  //===========================================================================
 
   // Forward minimum line scales
   var x = d3.scaleSqrt().rangeRound([0, innerWidth])
   var y = d3.scaleLog().rangeRound([innerHeight, 0])
 
   x.domain([0, xMax])
-  y.domain([d3.min(data, (d) => d.forwardMinimumPrice), yMax]) // or, d.forwardMinimumPrice
+  y.domain([d3.min(data, (d) => d.forwardMinimumPrice), yMax])
 
   // Create forward minimum line
   var forwardMinLine = d3.line()
     .x(d => x(d.index))
     .y(d => y(d.forwardMinimumPrice))
 
-  //=======================================================
+  //===========================================================================
 
   // Regression line scales
   var x2 = d3.scaleLinear().rangeRound([0, innerWidth])
   var y2 = d3.scaleLinear().rangeRound([innerHeight, 0])
 
   x2.domain([0, Math.sqrt(xMax)])
-  y2.domain([d3.min(data, (d) => d.log10forwardMinimumPrice), Math.log10(yMax)]) // or, d.log10forwardMinimumPrice
+  y2.domain([d3.min(data, (d) => d.log10forwardMinimumPrice), Math.log10(yMax)])
 
-  // Create regression line
+  // Create regression lines
   var regressionLine = d3.line()
     .x(d => x2(d.sqrtDaysPassed))
     .y(d => y2(d.regressionNlb))
 
+  // Standard deviation line - top
   var regressionLineTop = d3.line()
     .x(d => x2(d.sqrtDaysPassed))
     .y(d => y2(d.regressionNlb + standardDeviation))
 
+  // Standard deviation line - bottom
   var regressionLineBottom = d3.line()
     .x(d => x2(d.sqrtDaysPassed))
     .y(d => y2(d.regressionNlb - standardDeviation))
 
   //=======================================================
 
+  // A tick for Jan 1. on each year
   const xTickVals = regressionData
     .filter(i => i.date.getMonth() == 0 && i.date.getDate() == 1)
     .map(i => i.index)
+
+  // A tick for each order of magnitude in price
+  const yTickValues = [0.1, 1, 10, 100, 1000, 10000, 100000, 1000000]
 
   // X gridlines - Draw gridlines first to put beneath axis
   g.append('g')
@@ -103,7 +96,7 @@ const drawChart = (chartData) => {
     .attr('class', 'grid')
     .call(
       d3.axisLeft(y)
-        .tickValues([0.1, 1, 10, 100, 1000, 10000, 100000, 1000000])
+        .tickValues(yTickValues)
         .tickSize(-innerWidth)
         .tickFormat('')
     )
@@ -131,7 +124,7 @@ const drawChart = (chartData) => {
     .call(
       d3.axisLeft(y)
         .tickFormat(d3.format(",.1f"))
-        .tickValues([0.1, 1, 10, 100, 1000, 10000, 100000, 1000000])
+        .tickValues(yTickValues)
     )
     .append('text')
     .attr('class', 'axis-text')

@@ -6,7 +6,6 @@ class ChartData {
   constructor(rawData) {
     this.data = rawData.slice()
     this.formatData()
-    this.bacon = 'yes'
     this.regressionData = this.getRegressionData()
     this.standardDeviation = this.getStandardDeviation()
   }
