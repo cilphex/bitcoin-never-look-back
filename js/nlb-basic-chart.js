@@ -1,7 +1,8 @@
-import data from './data.js'
 import d3 from './d3.js'
 
-const drawChart = () => {
+const drawChart = (chartData) => {
+  const data = chartData.data
+
   // Vars for dimensions
   const margin = { top: 20, right: 20, bottom: 35, left: 75 }
   const width = 800

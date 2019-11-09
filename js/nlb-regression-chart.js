@@ -1,9 +1,15 @@
-import data from './data.js'
-import moment from './moment.js'
-import { regressionNlbFn, dataStandardDeviation } from './util.js'
 import d3 from './d3.js'
+import moment from './moment.js'
+// import { getRegressionData, getStandardDeviation } from './util.js'
 
-const drawChart = () => {
+
+const drawChart = (chartData) => {
+  const {
+    data,
+    regressionData,
+    standardDeviation
+  } = chartData
+
   // Vars for dimensions
   const margin = { top: 20, right: 20, bottom: 35, left: 75 }
   const width = 800
@@ -57,15 +63,6 @@ const drawChart = () => {
 
   //=======================================================
 
-  const regressionData = Array(5000).fill(null).map((val, i) => {
-    const index = i
-    const date = moment(data[0].date).add(i, 'days').toDate()
-    const sqrtDaysPassed = Math.sqrt(i)
-    const regressionNlb = regressionNlbFn(sqrtDaysPassed)
-
-    return { index, date, sqrtDaysPassed, regressionNlb }
-  })
-
   // Regression line scales
   var x2 = d3.scaleLinear().rangeRound([0, innerWidth])
   var y2 = d3.scaleLinear().rangeRound([innerHeight, 0])
@@ -77,8 +74,6 @@ const drawChart = () => {
   var regressionLine = d3.line()
     .x(d => x2(d.sqrtDaysPassed))
     .y(d => y2(d.regressionNlb))
-
-  const standardDeviation = dataStandardDeviation()
 
   var regressionLineTop = d3.line()
     .x(d => x2(d.sqrtDaysPassed))
