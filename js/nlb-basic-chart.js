@@ -84,7 +84,6 @@ const drawChart = (chartData) => {
     .datum(data)
     .attr('class', 'path-line path-forward-min-price')
     .attr('d', forwardMinLine)
-
 }
 
 export {

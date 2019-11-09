@@ -1,7 +1,6 @@
+import Constants from './constants.js'
 import d3 from './d3.js'
 import moment from './moment.js'
-// import { getRegressionData, getStandardDeviation } from './util.js'
-
 
 const drawChart = (chartData) => {
   const {
@@ -44,8 +43,7 @@ const drawChart = (chartData) => {
   //   .x(d => x(d.sqrtDaysPassed))
   //   .y(d => y(d.log10forwardMinimumPrice))
 
-  var xMax = 5000    // Days passed
-  var yMax = 1000000 // Price
+  const { xMax, yMax } = Constants.regressionChart
 
   //=======================================================
 
@@ -178,7 +176,6 @@ const drawChart = (chartData) => {
     .attr('class', 'path-line path-regression-std-dev')
     .attr('clip-path', "url(#chart-area-clip)")
     .attr('d', regressionLineBottom)
-
 }
 
 export {

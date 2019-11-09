@@ -1,3 +1,4 @@
+import Constants from './constants.js'
 import mathTools from './math-tools.js'
 import moment from './moment.js'
 
@@ -65,7 +66,9 @@ class ChartData {
   }
 
   getRegressionData() {
-    return Array(5000).fill(null).map((val, i) => {
+    const { xMax } = Constants.regressionChart
+
+    return Array(xMax).fill(null).map((val, i) => {
       const index = i
       const date = moment(this.data[0].date).add(i, 'days').toDate()
       const sqrtDaysPassed = Math.sqrt(i)
