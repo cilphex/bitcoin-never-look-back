@@ -10,6 +10,7 @@ class ChartData {
     this.standardDeviation = this.getStandardDeviation()
 
     window.datax = this.data
+    window.regressionDatax = this.regressionData
   }
 
   reverseData() {
@@ -66,14 +67,18 @@ class ChartData {
     this.addRegressionFields()
   }
 
+  /* This is separate from the regular "data" in that it has more rows,
+   * extrapolated on into the future.
+   */
   getRegressionData() {
     return Array(5000).fill(null).map((val, i) => {
       const index = i
       const date = moment(this.data[0].date).add(i, 'days').toDate()
+      const price = this.data[i] && this.data[i].price
       const sqrtDaysPassed = Math.sqrt(i)
       const regressionNlb = this.regressionNlbFn(sqrtDaysPassed)
 
-      return { index, date, sqrtDaysPassed, regressionNlb }
+      return { index, date, price, sqrtDaysPassed, regressionNlb }
     })
   }
 

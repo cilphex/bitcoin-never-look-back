@@ -18,13 +18,21 @@
       <h2>Regression</h2>
       <div id="nlb_chart" class="chart"></div>
       <div class="slider-container">
-        <input type="range" min="1" max="100" value="50">
+        <input type="range" class="chart-range" min="1" max="100" value="50">
       </div>
 
-      <h2>Extrapolation</h2>
+      <div class="chart-header">
+        <h2>Extrapolation</h2>
+        <div id="extrapolation_chart_data" class="chart-data">
+          Price: <span class="price">$8,000</span>
+          Expected: <span class="expected">$9,000</span>
+          Max: <span class="deviation d-max">$15,000</span>
+          Min: <span class="deviation d-min">$6,500</span>
+        </div>
+      </div>
       <div id="extrapolation_chart" class="chart"></div>
       <div class="slider-container">
-        <input type="range" min="1" max="100" value="50">
+        <input type="range" class="chart-range" min="1" max="100" value="50">
       </div>
 
       <h2>Data Points</h2>

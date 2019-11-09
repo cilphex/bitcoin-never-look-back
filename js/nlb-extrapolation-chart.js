@@ -1,6 +1,11 @@
 import d3 from './d3.js'
 import moment from './moment.js'
 
+const moneyFormat = (num) => {
+  const formatted = num.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')
+  return `$${formatted}`
+}
+
 const drawChart = (chartData) => {
   const { data, regressionData, standardDeviation } = chartData
 
@@ -31,8 +36,6 @@ const drawChart = (chartData) => {
 
   xScale.domain(d3.extent(data, (d) => d.date))
   yScale.domain(d3.extent(data, (d) => d.price))
-
-  console.log('extent', d3.extent(data, (d) => d.date))
 
   // Create price line
   var priceLine = d3.line()
@@ -142,7 +145,7 @@ const drawChart = (chartData) => {
   // Rect to catch mouse movements
   const mouseArea = g.append('rect')
     .attr('class', 'mouse-overlay')
-    .attr('width', innerWidth)
+    .attr('width', innerWidth + margin.right)
     .attr('height', innerHeight)
     .on('mouseover', mouseOver)
     .on('mouseout', mouseOut)
@@ -151,31 +154,59 @@ const drawChart = (chartData) => {
   const bisectDate = d3.bisector((d) => d.date).right
 
   function mouseOver() {
-    g.selectAll('.mouse-line').style('visibility', 'visible')
+    g.select('.mouse-line').style('visibility', 'visible')
     g.selectAll('.mouse-circle').style('visibility', 'visible')
+    document.querySelector('#extrapolation_chart_data').style.visibility = 'visible'
   }
 
   function mouseOut() {
     g.select('.mouse-line').style('visibility', 'hidden')
-    g.select('.mouse-circle').style('visibility', 'hidden')
+    g.selectAll('.mouse-circle').style('visibility', 'hidden')
+    document.querySelector('#extrapolation_chart_data').style.visibility = 'hidden'
   }
 
   function mouseMove() {
     const mouse = d3.mouse(this)
     const date = xScale.invert(mouse[0]) // map value from range to domain
-    const index = bisectDate(data, date, 1) // get the index for the domain value
-    const item = data[index]
+    const index = bisectDate(regressionData, date, 1) // get the index for the domain value
+    const item = regressionData[index]
     const xPos = xScale(date)
-    const yPosPrice = yScale(item.price)
-    const yPosRegression = yScale(Math.pow(10, item.regressionNlb))
-    const yPosRegressionMax = yScale(Math.pow(10, item.regressionNlb + standardDeviation))
-    const yPosRegressionMin = yScale(Math.pow(10, item.regressionNlb - standardDeviation))
+
+    // Using regressionData instead of data and doing this check here lets
+    // us make the regression lines overflow to the bleeding edge of the chart
+    if (item.price) {
+      const yPosPrice = yScale(item.price)
+      g.select('.mouse-circle-price')
+        .style('visibility', 'visible')
+        .attr('transform', `translate(${xPos},${yPosPrice})`)
+      document.querySelector('#extrapolation_chart_data .price')
+        .textContent = moneyFormat(item.price)
+    }
+    else {
+      g.select('.mouse-circle-price').style('visibility', 'hidden')
+      document.querySelector('#extrapolation_chart_data .price')
+        .textContent = '???'
+    }
+
+    const regressionPrice = Math.pow(10, item.regressionNlb)
+    const regressionPriceMax = Math.pow(10, item.regressionNlb + standardDeviation)
+    const regressionPriceMin = Math.pow(10, item.regressionNlb - standardDeviation)
+
+    const yPosRegression = yScale(regressionPrice)
+    const yPosRegressionMax = yScale(regressionPriceMax)
+    const yPosRegressionMin = yScale(regressionPriceMin)
 
     mouseLine.attr('transform', `translate(${xPos},0)`)
-    mouseCirclePrice.attr('transform', `translate(${xPos},${yPosPrice})`)
     mouseCircleRegression.attr('transform', `translate(${xPos},${yPosRegression})`)
     mouseCircleRegressionMax.attr('transform', `translate(${xPos},${yPosRegressionMax})`)
     mouseCircleRegressionMin.attr('transform', `translate(${xPos},${yPosRegressionMin})`)
+
+    document.querySelector('#extrapolation_chart_data .expected')
+      .textContent = moneyFormat(regressionPrice)
+    document.querySelector('#extrapolation_chart_data .d-max')
+      .textContent = moneyFormat(regressionPriceMax)
+    document.querySelector('#extrapolation_chart_data .d-min')
+      .textContent = moneyFormat(regressionPriceMin)
   }
 }
 

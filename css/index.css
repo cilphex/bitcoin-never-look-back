@@ -42,6 +42,44 @@ div.footer {
   border-top: 1px solid #eee;
 }
 
+div.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 30px 0 10px;
+}
+
+div.chart-header h2 {
+  margin: 0;
+}
+
+div.chart-data {
+  font-size: 14px;
+  color: #888;
+  visibility: hidden;
+}
+
+div.chart-data span {
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+div.chart-data span:last-of-type {
+  margin: 0;
+}
+
+div.chart-data span.price {
+  color: #555;
+}
+
+div.chart-data span.expected {
+  color: #03a9f4;
+}
+
+div.chart-data span.deviation {
+  color: rgba(255,0,0,0.5);
+}
+
 div.chart {
   margin: 10px 0;
 }
@@ -53,7 +91,7 @@ div.slider-container {
   height: 20px; /* Height of the slider thumb. */
 }
 
-div.slider-container input[type="range"] {
+input.chart-range {
   -webkit-appearance: none;
   appearance: none;
   width: 200px;
@@ -64,11 +102,11 @@ div.slider-container input[type="range"] {
   cursor: pointer;
 }
 
-div.slider-container input[type="range"]:hover {
+input.chart-range:hover {
   background: #03a9f4;
 }
 
-div.slider-container input[type="range"]::-webkit-slider-thumb {
+input.chart-range::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
   width: 10px;
@@ -78,7 +116,7 @@ div.slider-container input[type="range"]::-webkit-slider-thumb {
   border-radius: 100px;
 }
 
-div.slider-container input[type="range"]:hover::-webkit-slider-thumb {
+input.chart-range:hover::-webkit-slider-thumb {
   width: 20px;
   height: 20px;
   border-color: #03a9f4;
