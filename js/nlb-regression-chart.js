@@ -10,8 +10,7 @@ const drawChart = (chartData) => {
     standardDeviation
   } = chartData
 
-  // X and Y limits for the chart
-  const { xMax, yMax } = Constants.regressionChart
+
 
   // Vars for dimensions
   const margin = { top: 20, right: 20, bottom: 35, left: 75 }
@@ -32,6 +31,10 @@ const drawChart = (chartData) => {
     .attr('transform', `translate(${margin.left}, ${margin.top})`)
     .attr('width', innerWidth)
     .attr('height', innerHeight)
+
+  // X and Y limits for the chart
+  const xMax = data.length
+  const yMax = d3.max(data, (d) => d.forwardMinimumPrice)
 
   //===========================================================================
 
@@ -79,7 +82,7 @@ const drawChart = (chartData) => {
     .map(i => i.index)
 
   // A tick for each order of magnitude in price
-  const yTickValues = [0.1, 1, 10, 100, 1000, 10000, 100000, 1000000]
+  const yTickValues = [0.1, 1, 10, 100, 1000, 10000, 100000, 1000000, 10000000]
 
   // X gridlines - Draw gridlines first to put beneath axis
   g.append('g')

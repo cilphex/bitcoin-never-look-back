@@ -3,7 +3,7 @@ export default {
     maxDays: 10000, // 10,000
   },
   regressionChart: {
-    xMax: 5000,    // Days passed
-    yMax: 1000000, // Price
+    // xMax: 3000,    // Days passed
+    // yMax: 1000000, // Price
   }
 }

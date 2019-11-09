@@ -1,5 +1,5 @@
 const moneyFormat = (num) => {
-  const formatted = num.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')
+  const formatted = Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   return `$${formatted}`
 }
 
