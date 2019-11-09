@@ -35,7 +35,9 @@ h2 {
 }
 
 div.footer {
-  margin: 30px 0;
+  display: flex;
+  justify-content: space-between;
+  margin: 30px 0 0;
   padding: 10px 0;
   border-top: 1px solid #eee;
 }
@@ -135,7 +137,7 @@ div.data-points {
 }
 
 div.data-points > div {
-  flex-grow: 1;
+  flex-basis: 100%;
   margin-right: 10px;
   padding: 15px;
   background: #fafafa;
