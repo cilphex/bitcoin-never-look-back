@@ -42,6 +42,46 @@ div.chart {
   margin: 10px 0;
 }
 
+div.slider-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /*margin: 20px 0;*/
+  height: 20px; /* Height of the slider thumb. */
+}
+
+div.slider-container input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 200px;
+  height: 2px;
+  background: #eee;
+  border-radius: 100px;
+  outline: none;
+  cursor: pointer;
+}
+
+div.slider-container input[type="range"]:hover {
+  background: #03a9f4;
+}
+
+div.slider-container input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 10px;
+  height: 10px;
+  background: #fff;
+  border: 2px solid #eee;
+  border-radius: 100px;
+  /*box-shadow: 0 2px 5px rgba(0,0,0,0.25);*/
+}
+
+div.slider-container input[type="range"]:hover::-webkit-slider-thumb {
+  width: 20px;
+  height: 20px;
+  border-color: #03a9f4;
+}
+
 .chart-svg {
   background: #fafafa;
   border: 1px solid #eee;
@@ -75,15 +115,15 @@ div.chart {
 }
 
 .path-forward-min-price {
-  stroke: steelblue;
+  stroke: #03a9f4;
 }
 
 .path-regression {
-  stroke: green;
+  stroke: #00ff0a;
   opacity: 0.3;
 }
 
 .path-regression-std-dev {
-  stroke: red;
-  opacity: 0.15;
+  stroke: #ff0000;
+  opacity: 0.2;
 }
