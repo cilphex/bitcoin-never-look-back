@@ -8,6 +8,8 @@ class ChartData {
     this.formatData()
     this.regressionData = this.getRegressionData()
     this.standardDeviation = this.getStandardDeviation()
+
+    window.data = this.data
   }
 
   reverseData() {
