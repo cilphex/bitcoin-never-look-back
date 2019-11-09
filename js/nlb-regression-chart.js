@@ -146,7 +146,7 @@ const drawChart = (chartData) => {
     .append('rect')
     .attr('x', 0)
     .attr('y', 0)
-    .attr('width', innerWidth)
+    .attr('width', innerWidth + margin.right)
     .attr('height', innerHeight)
 
   // Append the regression line
