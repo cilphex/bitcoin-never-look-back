@@ -97,7 +97,7 @@ const drawChart = (chartData) => {
   // Append the regression line
   g.append('path')
     .datum(regressionData)
-    .attr('class', 'path-line path-forward-min-price')
+    .attr('class', 'path-line path-regression')
     .attr('d', extrapolationLine)
 
   // Top variation

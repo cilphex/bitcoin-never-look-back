@@ -182,7 +182,7 @@ const drawChart = (chartData) => {
 
   // Circles - must be appended to a group, not rect
   const mouseCirclePrice = g.append('circle')
-    .attr('class', 'mouse-circle mouse-circle-price')
+    .attr('class', 'mouse-circle mouse-circle-forward-minimum')
     .attr('visibility', 'hidden')
 
   const mouseCircleRegression = g.append('circle')
@@ -233,14 +233,14 @@ const drawChart = (chartData) => {
 
     if (item.forwardMinimumPrice) {
       const yPosPrice = yScale(item.forwardMinimumPrice)
-      g.select('.mouse-circle-price')
+      g.select('.mouse-circle-forward-minimum')
         .style('visibility', 'visible')
         .attr('transform', `translate(${xPos},${yPosPrice})`)
       document.querySelector('#regression_chart_data .forward-minimum')
         .textContent = moneyFormat(item.forwardMinimumPrice)
     }
     else {
-      g.select('.mouse-circle-price').style('visibility', 'hidden')
+      g.select('.mouse-circle-forward-minimum').style('visibility', 'hidden')
       document.querySelector('#regression_chart_data .forward-minimum')
         .textContent = '???'
     }

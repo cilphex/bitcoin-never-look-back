@@ -101,7 +101,7 @@ const drawChart = (chartData) => {
     .attr('visibility', 'hidden')
 
   const mouseCircleNlb = g.append('circle')
-    .attr('class', 'mouse-circle mouse-circle-nlb')
+    .attr('class', 'mouse-circle mouse-circle-forward-minimum')
     .attr('visibility', 'hidden')
 
   // Rect to catch mouse movements

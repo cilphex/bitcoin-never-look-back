@@ -72,13 +72,17 @@ div.chart-data span.price {
   color: #555;
 }
 
-div.chart-data span.forward-minimum,
-div.chart-data span.expected {
+div.chart-data span.forward-minimum {
   color: #03a9f4;
 }
 
+div.chart-data span.expected {
+  color: #ff699c;
+}
+
 div.chart-data span.deviation {
-  color: rgba(255,0,0,0.5);
+  color: #ff699c;
+  opacity: 0.66;
 }
 
 div.chart {
@@ -131,9 +135,8 @@ input.chart-range:hover::-webkit-slider-thumb {
 }
 
 .mouse-line {
-  stroke: rgba(156,39,176,0.5);
+  stroke: #2ec135;
   stroke-width: 1px;
-  fill: red;
 }
 
 .mouse-circle {
@@ -143,17 +146,21 @@ input.chart-range:hover::-webkit-slider-thumb {
 }
 
 .mouse-circle-price {
-  fill: #888;
+  fill: #555;
   opacity: 0.5;
+}
+
+.mouse-circle-forward-minimum {
+  fill: #03a9f4;
 }
 
 .mouse-circle-nlb,
 .mouse-circle-regression {
-  fill: #03a9f4;
+  fill: #ff699c;
 }
 
 .mouse-circle-deviation {
-  fill: red;
+  fill: #ff699c;
   opacity: 0.3;
 }
 
@@ -194,13 +201,12 @@ input.chart-range:hover::-webkit-slider-thumb {
 }
 
 .path-regression {
-  stroke: #00ff00;
-  opacity: 0.3;
+  stroke: #ff699c;
 }
 
 .path-regression-std-dev {
-  stroke: #ff0000;
-  opacity: 0.2;
+  stroke: #ff699c;
+  opacity: 0.3;
 }
 
 div.data-points {
