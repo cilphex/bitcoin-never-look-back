@@ -67,9 +67,7 @@ class ChartData {
   }
 
   getRegressionData() {
-    const { xMax } = Constants.regressionChart
-
-    return Array(xMax).fill(null).map((val, i) => {
+    return Array(5000).fill(null).map((val, i) => {
       const index = i
       const date = moment(this.data[0].date).add(i, 'days').toDate()
       const sqrtDaysPassed = Math.sqrt(i)

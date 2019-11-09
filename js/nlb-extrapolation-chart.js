@@ -2,7 +2,7 @@ import d3 from './d3.js'
 import moment from './moment.js'
 
 const drawChart = (chartData) => {
-  const { data, regressionData } = chartData
+  const { data, regressionData, standardDeviation } = chartData
 
   // Vars for dimensions
   const margin = { top: 20, right: 20, bottom: 35, left: 75 }
@@ -26,8 +26,11 @@ const drawChart = (chartData) => {
   var x = d3.scaleTime().rangeRound([0, innerWidth])
   var y = d3.scaleLinear().rangeRound([innerHeight, 0])
 
-  x.domain([data[0].date, moment(data[0].date).add(5000, 'days').toDate()])
-  y.domain([0, 150000])
+  // x.domain([data[0].date, moment(data[0].date).add(4000, 'days').toDate()])
+  // y.domain([0, 100000])
+
+  x.domain(d3.extent(data, (d) => d.date))
+  y.domain(d3.extent(data, (d) => d.price))
 
   // Create price line
   var priceLine = d3.line()
@@ -38,6 +41,16 @@ const drawChart = (chartData) => {
   var extrapolationLine = d3.line()
     .x(d => x(d.date))
     .y(d => y(Math.pow(10, d.regressionNlb)))
+
+  // Create extrapolation line
+  var extrapolationLineTop = d3.line()
+    .x(d => x(d.date))
+    .y(d => y(Math.pow(10, d.regressionNlb + standardDeviation)))
+
+  // Create extrapolation line
+  var extrapolationLineBottom = d3.line()
+    .x(d => x(d.date))
+    .y(d => y(Math.pow(10, d.regressionNlb - standardDeviation)))
 
   // X gridlines - Draw gridlines first to put beneath axis
   g.append('g')
@@ -80,11 +93,23 @@ const drawChart = (chartData) => {
     .attr('class', 'path-line path-price')
     .attr('d', priceLine)
 
-  // Append the forward minimum price line
+  // Append the regression line
   g.append('path')
     .datum(regressionData)
     .attr('class', 'path-line path-forward-min-price')
     .attr('d', extrapolationLine)
+
+  // Top variation
+  g.append('path')
+    .datum(regressionData)
+    .attr('class', 'path-line path-regression-std-dev')
+    .attr('d', extrapolationLineTop)
+
+  // Bottom variation
+  g.append('path')
+    .datum(regressionData)
+    .attr('class', 'path-line path-regression-std-dev')
+    .attr('d', extrapolationLineBottom)
 }
 
 export {
