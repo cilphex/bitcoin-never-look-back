@@ -10,8 +10,6 @@ const drawChart = (chartData) => {
     standardDeviation
   } = chartData
 
-
-
   // Vars for dimensions
   const margin = { top: 20, right: 20, bottom: 35, left: 75 }
   const width = 800
