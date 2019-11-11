@@ -7,10 +7,10 @@ import DataPointManager from './data-point-manager.js'
 
 const chartData = new ChartData(rawData)
 
-new BasicChart(chartData).drawChart()
-new RegressionChart(chartData).drawChart()
-new ExtrapolationChart(chartData).drawChart()
-new DataPointManager(chartData).fillData()
+new BasicChart(chartData)
+new RegressionChart(chartData)
+new ExtrapolationChart(chartData)
+new DataPointManager(chartData)
 
 // document.querySelector('#regression_chart_range')
 //   .addEventListener('input', (e) => {

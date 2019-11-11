@@ -5,6 +5,8 @@ import { moneyFormat } from './util.js'
 class DataPointManager {
   constructor(chartData) {
     this.chartData = chartData
+
+    this.fillData()
   }
 
   fillData() {

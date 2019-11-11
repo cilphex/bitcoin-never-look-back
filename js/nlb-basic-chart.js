@@ -4,7 +4,10 @@ import { moneyFormat } from './util.js'
 
 class BasicChart {
   constructor(chartData) {
+    this.containerElement = '#basic_chart'
     this.chartData = chartData
+
+    this.drawChart()
   }
 
   drawChart() {
@@ -17,8 +20,11 @@ class BasicChart {
     const innerWidth = width - margin.left - margin.right
     const innerHeight = height - margin.top - margin.bottom
 
+    // Clear the container
+    document.querySelector(this.containerElement).innerHtml = ''
+
     // Create the chart SVG
-    const svg = d3.select('#price_chart')
+    const svg = d3.select(this.containerElement)
       .append('svg')
       .attr('width', width)
       .attr('height', height)

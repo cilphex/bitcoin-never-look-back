@@ -5,7 +5,12 @@ import { moneyFormat } from './util.js'
 
 class RegressionChart {
   constructor(chartData) {
+    this.containerElement = '#regression_chart'
+    this.rangeElement = '#regression_chart_range'
     this.chartData = chartData
+
+    this.drawChart()
+    this.setupRangeListener()
   }
 
   drawChart() {
@@ -22,8 +27,11 @@ class RegressionChart {
     const innerWidth = width - margin.left - margin.right
     const innerHeight = height - margin.top - margin.bottom
 
+    // Clear the container
+    document.querySelector(this.containerElement).innerHtml = ''
+
     // Create the chart SVG
-    const svg = d3.select('#regression_chart')
+    const svg = d3.select(this.containerElement)
       .append('svg')
       .attr('width', width)
       .attr('height', height)
@@ -274,6 +282,10 @@ class RegressionChart {
       document.querySelector('#regression_chart_data .date')
         .textContent = moment(item.date).format('MMM D, YYYY')
     }
+  }
+
+  setupRangeListener() {
+    console.log('implement RegressionChart#setupRangeListener()')
   }
 }
 
