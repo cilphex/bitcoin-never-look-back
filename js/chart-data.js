@@ -69,7 +69,9 @@ class ChartData {
   }
 
   /* This is separate from the regular "data" in that it has more rows,
-   * extrapolated on into the future.
+   * extrapolated on into the future. Some rows include original "data"
+   * (non-extrapolated) fields, because it's easier in some cases to use
+   * regressionData by itself for both, rather than regressionData + data.
    */
   getRegressionData() {
     const { maxDays } = Constants.regressionData
