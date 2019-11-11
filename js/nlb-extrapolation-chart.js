@@ -4,8 +4,6 @@ import { moneyFormat } from './util.js'
 
 class ExtrapolationChart {
   constructor(chartData) {
-    this.containerElement = '#extrapolation_chart'
-    this.rangeElement = '#extrapolation_chart_range'
     this.chartData = chartData
 
     this.drawChart()
@@ -27,10 +25,10 @@ class ExtrapolationChart {
     const innerHeight = height - margin.top - margin.bottom
 
     // Clear the container
-    document.querySelector(this.containerElement).innerHtml = ''
+    document.querySelector('#extrapolation_chart').innerHtml = ''
 
     // Create the chart SVG
-    const svg = d3.select(this.containerElement)
+    const svg = d3.select('#extrapolation_chart')
       .append('svg')
       .attr('width', width)
       .attr('height', height)

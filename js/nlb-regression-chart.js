@@ -5,8 +5,6 @@ import { moneyFormat } from './util.js'
 
 class RegressionChart {
   constructor(chartData) {
-    this.containerElement = '#regression_chart'
-    this.rangeElement = '#regression_chart_range'
     this.chartData = chartData
 
     this.drawChart()
@@ -28,10 +26,10 @@ class RegressionChart {
     const innerHeight = height - margin.top - margin.bottom
 
     // Clear the container
-    document.querySelector(this.containerElement).innerHtml = ''
+    document.querySelector('#regression_chart').innerHtml = ''
 
     // Create the chart SVG
-    const svg = d3.select(this.containerElement)
+    const svg = d3.select('#regression_chart')
       .append('svg')
       .attr('width', width)
       .attr('height', height)
