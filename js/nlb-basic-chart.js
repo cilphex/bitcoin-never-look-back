@@ -10,7 +10,7 @@ class BasicChart {
     this.drawChart()
   }
 
-  drawChart() {
+  drawChart = () => {
     const data = this.chartData.data
 
     // Vars for dimensions

@@ -11,7 +11,7 @@ class RegressionChart {
     this.setupRangeListener()
   }
 
-  drawChart() {
+  drawChart = () => {
     const {
       data,
       regressionData,
@@ -282,7 +282,7 @@ class RegressionChart {
     }
   }
 
-  setupRangeListener() {
+  setupRangeListener = () => {
     console.log('implement RegressionChart#setupRangeListener()')
   }
 }

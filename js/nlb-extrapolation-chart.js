@@ -10,7 +10,7 @@ class ExtrapolationChart {
     this.setupRangeListener()
   }
 
-  drawChart(chartData) {
+  drawChart = (chartData) => {
     const {
       data,
       regressionData,
@@ -42,8 +42,8 @@ class ExtrapolationChart {
     var xScale = d3.scaleTime().rangeRound([0, innerWidth])
     var yScale = d3.scaleLinear().rangeRound([innerHeight, 0])
 
-    // x.domain([data[0].date, moment(data[0].date).add(3000, 'days').toDate()])
-    // y.domain([0, 10000])
+    // xScale.domain([data[0].date, moment(data[0].date).add(5000, 'days').toDate()])
+    // yScale.domain([0, 50000])
 
     xScale.domain(d3.extent(data, (d) => d.date))
     yScale.domain(d3.extent(data, (d) => d.price))
@@ -241,8 +241,25 @@ class ExtrapolationChart {
     }
   }
 
-  setupRangeListener() {
-    console.log('implement ExtrapolationChart#setupRangeListener()')
+  setupRangeListener = () => {
+    document.querySelector('#extrapolation_chart_range')
+      .addEventListener('input', this.rangeChange)
+  }
+
+  mapInputRange = (inputRangeValue) => {
+    inputRangeValue = 100 - inputRangeValue
+    const min = this.chartData.data.length
+    const max = 10000 // Constants.regressionData.maxDays
+    const rangeDiff = max - min
+    const percent = inputRangeValue / 100
+    const offset = rangeDiff * percent
+    const pos = min + offset
+    return pos
+  }
+
+  rangeChange = (e) => {
+    const range = this.mapInputRange(e.target.value)
+    console.log('range', range)
   }
 }
 

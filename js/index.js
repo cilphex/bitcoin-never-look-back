@@ -14,5 +14,5 @@ new DataPointManager(chartData)
 
 // document.querySelector('#regression_chart_range')
 //   .addEventListener('input', (e) => {
-//     console.log('event', e)
+//     console.log('value', e.target.value)
 //   })
