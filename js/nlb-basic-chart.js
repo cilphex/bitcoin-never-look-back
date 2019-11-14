@@ -26,8 +26,8 @@ class BasicChart {
     // Create the chart SVG
     const svg = d3.select(this.containerElement)
       .append('svg')
-      .attr('width', width)
-      .attr('height', height)
+      .attr('viewBox', `0 0 ${width} ${height}`)
+      .attr('preserveAspectRatio', 'xMidYMid meet')
       .attr('class', 'chart-svg')
 
     // Create and append the main group
