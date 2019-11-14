@@ -12,6 +12,8 @@ described in [this Medium article](https://medium.com/@cane.island/why-bitcoin-i
 - Figure out what's going on with `constants.js`
 - Variable renaming - inconsistencies w/ "nlb" & "forward minimum"
 - Sliders
+- Responsive charts & mobile
+- Analytics
 - Any TODOs in code
 - Implement [Cloud Build](https://cloud.google.com/community/tutorials/automated-publishing-cloud-build)
 
