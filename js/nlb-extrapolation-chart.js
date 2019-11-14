@@ -42,9 +42,6 @@ class ExtrapolationChart {
     var xScale = d3.scaleTime().rangeRound([0, innerWidth])
     var yScale = d3.scaleLinear().rangeRound([innerHeight, 0])
 
-
-
-
     this.setScale = (maxDays, maxPrice) => {
       maxDays = maxDays || data.length - 1
       maxPrice = maxPrice || d3.max(data, (d) => d.price)
@@ -53,23 +50,7 @@ class ExtrapolationChart {
       yScale.domain([0, maxPrice])
     }
 
-    // this.setScale1 = () => {
-    //   xScale.domain(d3.extent(data, (d) => d.date))
-    //   yScale.domain(d3.extent(data, (d) => d.price))
-    // }
-
-    // this.setScale2 = () => {
-    //   xScale.domain([data[0].date, moment(data[0].date).add(5000, 'days').toDate()])
-    //   yScale.domain([0, 50000])
-    //   // yScale.domain(d3.extent(data, (d) => d.price))
-    // }
-
     this.setScale(null, null)
-
-
-
-
-
 
     // Create price line
     var priceLine = d3.line()
@@ -99,12 +80,8 @@ class ExtrapolationChart {
       .tickSize(-innerWidth)
       .tickFormat('')
 
-
-
-
-
-
-
+    const xAxisCall = d3.axisBottom(xScale)
+    const yAxisCall = d3.axisLeft(yScale)
 
     // X gridlines - Draw gridlines first to put beneath axis
     g.append('g')
@@ -116,12 +93,6 @@ class ExtrapolationChart {
     g.append('g')
       .attr('class', 'y grid')
       .call(yGridCall)
-
-
-
-
-    const xAxisCall = d3.axisBottom(xScale)
-    const yAxisCall = d3.axisLeft(yScale)
 
     // Bottom axis - Date
     g.append('g')
@@ -142,14 +113,15 @@ class ExtrapolationChart {
       .text('Price ($)')
 
     // Append a clip path for the chart area, so lines don't overflow.
-    // Not really used much on this chart since it extends to the right bleed
+    // Only really used for bottom clipping since top and right edges
+    // extend to the edge bleed.
     g.append('clipPath')
       .attr('id', 'extrapolation_chart_clip')
       .append('rect')
       .attr('x', 0)
-      .attr('y', 0)
+      .attr('y', 0 - margin.top)
       .attr('width', innerWidth + margin.right)
-      .attr('height', innerHeight)
+      .attr('height', innerHeight + margin.top)
 
     // Append the price line
     const pricePath = g.append('path')
@@ -165,7 +137,6 @@ class ExtrapolationChart {
       .attr('clip-path', "url(#extrapolation_chart_clip)")
       .attr('d', extrapolationLine)
 
-
     // Top variation
     const topDeviationPath = g.append('path')
       .datum(regressionData)
@@ -180,7 +151,10 @@ class ExtrapolationChart {
       .attr('clip-path', "url(#extrapolation_chart_clip)")
       .attr('d', extrapolationLineBottom)
 
-
+    // Re-call and re-attr the axes and line paths.
+    // Possible to do this way thanks to closures; 'g', 'pricePath', etc.,
+    // are still available in this function even if it's called outside this
+    // context.
     this.rescale = () => {
       g.select('.x.grid')
         .call(xGridCall)
@@ -312,7 +286,7 @@ class ExtrapolationChart {
       .addEventListener('input', this.rangeChange)
   }
 
-  mapInputRange = (inputRangeValue) => {
+  mapInputRangeToDays = (inputRangeValue) => {
     inputRangeValue = 100 - inputRangeValue
     const min = this.chartData.data.length
     const max = 10000 - 1 // Constants.regressionData.maxDays
@@ -320,11 +294,11 @@ class ExtrapolationChart {
     const percent = inputRangeValue / 100
     const offset = rangeDiff * percent
     const pos = min + offset
-    return Math.ceil(pos)
+    return Math.round(pos)
   }
 
   rangeChange = (e) => {
-    const maxDays = this.mapInputRange(e.target.value)
+    const maxDays = this.mapInputRangeToDays(e.target.value)
 
     // Determine the max price for the scale in a way that keeps its x,y
     // position the same for the last x point on the chart

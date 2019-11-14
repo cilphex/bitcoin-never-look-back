@@ -154,7 +154,8 @@ class RegressionChart {
       .attr('d', forwardMinLine)
 
     // Append a clip path for the chart area, so lines don't overflow.
-    // Only really used for bottom clipping since right edge extends to bleed.
+    // Only really used for bottom clipping since top and right edges
+    // extend to the edge bleed.
     g.append('clipPath')
       .attr('id', 'regression_chart_clip')
       .append('rect')
