@@ -11,15 +11,17 @@ Publicly viewable at [bitcoin.craighammell.com](http://bitcoin.craighammell.com)
 
 ### Todo
 
-- Figure out what's going on with `constants.js`
+- Figure out what's going on with `constants.js` - not needed?
 - Variable renaming - inconsistencies w/ "nlb" & "forward minimum"
-- Sliders
-- Responsive charts & mobile
-- Analytics
-- Any TODOs in code
-- Implement [Cloud Build](https://cloud.google.com/community/tutorials/automated-publishing-cloud-build)
 
 ### Tech Choices
 
 This project is an experiment in using vanilla, *browser-side* Javascript
 modules. Avoiding transpiling is a goal, nice as React and Mobx are.
+
+It may not work in some browsers.
+
+### Deployment
+
+This code is deployed to bitcoin.craighammell.com using
+[Cloud Build](https://cloud.google.com/community/tutorials/automated-publishing-cloud-build).
