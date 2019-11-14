@@ -196,6 +196,7 @@ input.chart-range:hover::-webkit-slider-thumb {
 }
 
 .chart-svg {
+  max-width: 100%;
   background: #fafafa;
   border: 1px solid #eee;
   box-sizing: border-box;
