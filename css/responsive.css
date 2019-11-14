@@ -1,0 +1,50 @@
+@media (max-width: 400px) {
+  h1 {
+    margin-top: 0;
+  }
+
+  div.content {
+    margin-bottom: 0;
+  }
+
+  div.chart-header {
+    position: relative;
+  }
+
+  div.chart-data {
+    flex-direction: column;
+    align-items: flex-end;
+
+    position: absolute;
+    right: 0;
+    bottom: -11px;
+    padding: 10px;
+    background: #fafafa;
+    background-image: linear-gradient(to bottom, #eee 0%, #fafafa 25%);
+    border: 1px solid #eee;
+    border-bottom: none;
+  }
+
+  div.chart-data div.numbers {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  div.chart-data div.numbers span {
+    margin: 0;
+  }
+
+  div.data-points {
+    flex-direction: column;
+  }
+
+  div.data-points > div {
+    margin: 0 0 10px;
+  }
+
+  input.chart-range::-webkit-slider-thumb {
+    width: 20px;
+    height: 20px;
+  }
+}
