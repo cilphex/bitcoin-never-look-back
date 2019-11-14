@@ -3,6 +3,8 @@
 This is a simple little page to track Bitcoin's "Never Look Back" price, as
 described in [this Medium article](https://medium.com/@cane.island/why-bitcoin-is-never-looking-back-f06ab333742e).
 
+Publicly viewable at [bitcoin.craighammell.com](http://bitcoin.craighammell.com).
+
 ### Current Limitations
 
 - The data must be manually updated, so is not always fresh.
