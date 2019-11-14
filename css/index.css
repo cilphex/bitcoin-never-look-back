@@ -42,6 +42,15 @@ div.footer {
   border-top: 1px solid #eee;
 }
 
+div.footer p.true-til-not span.take-a-while {
+  display: none;
+  color: #bbb;
+}
+
+div.footer p.true-til-not:hover span.take-a-while {
+  display: inline;
+}
+
 div.chart-header {
   display: flex;
   align-items: center;

@@ -42,11 +42,34 @@ class ExtrapolationChart {
     var xScale = d3.scaleTime().rangeRound([0, innerWidth])
     var yScale = d3.scaleLinear().rangeRound([innerHeight, 0])
 
-    // xScale.domain([data[0].date, moment(data[0].date).add(5000, 'days').toDate()])
-    // yScale.domain([0, 50000])
 
-    xScale.domain(d3.extent(data, (d) => d.date))
-    yScale.domain(d3.extent(data, (d) => d.price))
+
+
+    this.setScale = (maxDays, maxPrice) => {
+      maxDays = maxDays || data.length - 1
+      maxPrice = maxPrice || d3.max(data, (d) => d.price)
+
+      xScale.domain([data[0].date, moment(data[0].date).add(maxDays, 'days').toDate()])
+      yScale.domain([0, maxPrice])
+    }
+
+    // this.setScale1 = () => {
+    //   xScale.domain(d3.extent(data, (d) => d.date))
+    //   yScale.domain(d3.extent(data, (d) => d.price))
+    // }
+
+    // this.setScale2 = () => {
+    //   xScale.domain([data[0].date, moment(data[0].date).add(5000, 'days').toDate()])
+    //   yScale.domain([0, 50000])
+    //   // yScale.domain(d3.extent(data, (d) => d.price))
+    // }
+
+    this.setScale(null, null)
+
+
+
+
+
 
     // Create price line
     var priceLine = d3.line()
@@ -68,33 +91,48 @@ class ExtrapolationChart {
       .x(d => xScale(d.date))
       .y(d => yScale(Math.pow(10, d.regressionNlb - standardDeviation)))
 
+    const xGridCall = d3.axisBottom(xScale)
+      .tickSize(-innerHeight)
+      .tickFormat('')
+
+    const yGridCall = d3.axisLeft(yScale)
+      .tickSize(-innerWidth)
+      .tickFormat('')
+
+
+
+
+
+
+
+
     // X gridlines - Draw gridlines first to put beneath axis
     g.append('g')
       .attr('transform', `translate(0, ${innerHeight})`)
-      .attr('class', 'grid')
-      .call(
-        d3.axisBottom(xScale)
-          .tickSize(-innerHeight)
-          .tickFormat('')
-      )
+      .attr('class', 'x grid')
+      .call(xGridCall)
 
     // Y gridlines
     g.append('g')
-      .attr('class', 'grid')
-      .call(
-        d3.axisLeft(yScale)
-          .tickSize(-innerWidth)
-          .tickFormat('')
-      )
+      .attr('class', 'y grid')
+      .call(yGridCall)
+
+
+
+
+    const xAxisCall = d3.axisBottom(xScale)
+    const yAxisCall = d3.axisLeft(yScale)
 
     // Bottom axis - Date
     g.append('g')
+      .attr('class', 'x axis')
       .attr('transform', `translate(0, ${innerHeight})`)
-      .call(d3.axisBottom(xScale))
+      .call(xAxisCall)
 
     // Left axis - Price
     g.append('g')
-      .call(d3.axisLeft(yScale))
+      .attr('class', 'y axis')
+      .call(yAxisCall)
       .append('text')
       .attr('class', 'axis-text')
       .attr('transform', 'rotate(-90)')
@@ -114,32 +152,60 @@ class ExtrapolationChart {
       .attr('height', innerHeight)
 
     // Append the price line
-    g.append('path')
+    const pricePath = g.append('path')
       .datum(data)
       .attr('class', 'path-line path-price')
       .attr('clip-path', "url(#extrapolation_chart_clip)")
       .attr('d', priceLine)
 
     // Append the regression line
-    g.append('path')
+    const regressionLinePath = g.append('path')
       .datum(regressionData)
       .attr('class', 'path-line path-regression')
       .attr('clip-path', "url(#extrapolation_chart_clip)")
       .attr('d', extrapolationLine)
 
+
     // Top variation
-    g.append('path')
+    const topDeviationPath = g.append('path')
       .datum(regressionData)
       .attr('class', 'path-line path-regression-std-dev')
       .attr('clip-path', "url(#extrapolation_chart_clip)")
       .attr('d', extrapolationLineTop)
 
     // Bottom variation
-    g.append('path')
+    const bottomDeviationPath = g.append('path')
       .datum(regressionData)
       .attr('class', 'path-line path-regression-std-dev')
       .attr('clip-path', "url(#extrapolation_chart_clip)")
       .attr('d', extrapolationLineBottom)
+
+
+    this.rescale = () => {
+      g.select('.x.grid')
+        .call(xGridCall)
+
+      g.select('.y.grid')
+        .call(yGridCall)
+
+      g.select('.x.axis')
+        .call(xAxisCall)
+
+      g.select('.y.axis')
+        .call(yAxisCall)
+
+      pricePath
+        .attr('d', priceLine)
+
+      regressionLinePath
+        .attr('d', extrapolationLine)
+
+      topDeviationPath
+        .attr('d', extrapolationLineTop)
+
+      bottomDeviationPath
+        .attr('d', extrapolationLineBottom)
+    }
 
     // Append verticle line - must be appended to a group, not rect
     const mouseLine = g.append('line')
@@ -249,17 +315,28 @@ class ExtrapolationChart {
   mapInputRange = (inputRangeValue) => {
     inputRangeValue = 100 - inputRangeValue
     const min = this.chartData.data.length
-    const max = 10000 // Constants.regressionData.maxDays
+    const max = 10000 - 1 // Constants.regressionData.maxDays
     const rangeDiff = max - min
     const percent = inputRangeValue / 100
     const offset = rangeDiff * percent
     const pos = min + offset
-    return pos
+    return Math.ceil(pos)
   }
 
   rangeChange = (e) => {
-    const range = this.mapInputRange(e.target.value)
-    console.log('range', range)
+    const maxDays = this.mapInputRange(e.target.value)
+
+    // Determine the max price for the scale in a way that keeps its x,y
+    // position the same for the last x point on the chart
+    const { data, regressionData } = this.chartData
+    const origMaxPrice = d3.max(data, (d) => d.price)
+    const origMaxRegressionNlb = Math.pow(10, data[data.length-1].regressionNlb)
+    const ratio = origMaxPrice / origMaxRegressionNlb
+    const maxDayRegressionNlb = Math.pow(10, regressionData[maxDays].regressionNlb)
+    const maxPrice = maxDayRegressionNlb * ratio
+
+    this.setScale(maxDays, maxPrice)
+    this.rescale()
   }
 }
 

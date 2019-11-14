@@ -11,8 +11,3 @@ new BasicChart(chartData)
 new RegressionChart(chartData)
 new ExtrapolationChart(chartData)
 new DataPointManager(chartData)
-
-// document.querySelector('#regression_chart_range')
-//   .addEventListener('input', (e) => {
-//     console.log('value', e.target.value)
-//   })

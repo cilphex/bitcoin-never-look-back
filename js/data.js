@@ -1,5 +1,9 @@
 ﻿// "Date", "Price", "Open", "High", "Low", "Vol.", "Change %"
 
+// Important: proper graphing assumes no dates are missing.
+// This is true for horizontal scaling, which bases the date
+// range on the number of items present, rather than the difference
+// in min and max date in the items in this set
 const data = [
   { date: "Oct 18, 2019", price: "7,930.1" },
   { date: "Oct 17, 2019", price: "8,073.3" },
