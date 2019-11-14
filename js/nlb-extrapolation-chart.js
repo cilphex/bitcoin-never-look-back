@@ -38,7 +38,7 @@ class ExtrapolationChart {
     const innerHeight = height - margin.top - margin.bottom
 
     // Clear the container
-    document.querySelector('#extrapolation_chart').innerHtml = ''
+    document.querySelector('#extrapolation_chart').innerHTML = ''
 
     // Create the chart SVG
     const svg = d3.select('#extrapolation_chart')

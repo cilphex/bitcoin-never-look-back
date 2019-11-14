@@ -28,7 +28,7 @@ class RegressionChart {
     const innerHeight = height - margin.top - margin.bottom
 
     // Clear the container
-    document.querySelector('#regression_chart').innerHtml = ''
+    document.querySelector('#regression_chart').innerHTML = ''
 
     // Create the chart SVG
     const svg = d3.select('#regression_chart')

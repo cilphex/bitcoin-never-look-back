@@ -18,13 +18,17 @@
         <h2>Basic NLB</h2>
         <div id="basic_chart_data" class="chart-data">
           <div class="date"></div>
-          <div>
-            Price: <span class="price"></span>
-            NLB: <span class="forward-minimum"></span>
+          <div class="numbers">
+            <span>Price: <span class="price"></span></span>
+            <span>NLB: <span class="forward-minimum"></span></span>
           </div>
         </div>
       </div>
-      <div id="basic_chart" class="chart"></div>
+      <div id="basic_chart" class="chart">
+        <div class="chart-loading">
+          <span>Loading&hellip;</span>
+        </div>
+      </div>
 
       <div class="chart-header">
         <h2>Regression</h2>
@@ -38,7 +42,11 @@
           </div>
         </div>
       </div>
-      <div id="regression_chart" class="chart"></div>
+      <div id="regression_chart" class="chart">
+        <div class="chart-loading">
+          <span>Loading&hellip;</span>
+        </div>
+      </div>
       <div class="slider-container">
         <input type="range" id="regression_chart_range" class="chart-range" min="0" max="100" value="100">
       </div>
@@ -55,7 +63,11 @@
           </div>
         </div>
       </div>
-      <div id="extrapolation_chart" class="chart"></div>
+      <div id="extrapolation_chart" class="chart">
+        <div class="chart-loading">
+          <span>Loading&hellip;</span>
+        </div>
+      </div>
       <div class="slider-container">
         <input type="range" id="extrapolation_chart_range" class="chart-range" min="0" max="100" value="100">
       </div>

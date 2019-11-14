@@ -21,7 +21,7 @@ class BasicChart {
     const innerHeight = height - margin.top - margin.bottom
 
     // Clear the container
-    document.querySelector(this.containerElement).innerHtml = ''
+    document.querySelector(this.containerElement).innerHTML = ''
 
     // Create the chart SVG
     const svg = d3.select(this.containerElement)
