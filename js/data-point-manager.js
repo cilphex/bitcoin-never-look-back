@@ -12,6 +12,7 @@ class DataPointManager {
   fillData = () => {
     this.fillToday()
     this.fill5Years()
+    this.fillMagnitudes()
   }
 
   fillToday = () => {
@@ -61,6 +62,35 @@ class DataPointManager {
       .data(d => [
         moment(d.date).year(),
         moneyFormat(Math.round(Math.pow(10, d.regressionNlb)))
+      ])
+      .enter()
+      .append('td')
+      .text(d => d)
+  }
+
+  fillMagnitudes = () => {
+    const { regressionData } = this.chartData
+
+    const magnitudes = Array(5).fill(null)
+      .map((val, i) => Math.pow(10, i+3)) // 10,000 to 100,000,000
+      .map((price, i) =>
+        regressionData.find(dataItem =>
+          Math.pow(10, dataItem.regressionNlb) > price
+        )
+      )
+
+    var table = d3.select('#magnitude_data_points')
+
+    var rows = table
+      .selectAll('tr')
+      .data(magnitudes)
+      .enter()
+      .append('tr')
+
+    var cells = rows.selectAll('td')
+      .data(d => [
+        moneyFormat(Math.round(Math.pow(10, Math.floor(d.regressionNlb)))),
+        moment(d.date).format('MMM D, YYYY')
       ])
       .enter()
       .append('td')

@@ -6,6 +6,8 @@ import { moneyFormat } from './util.js'
 class RegressionChart {
   constructor(chartData) {
     this.chartData = chartData
+    this.maxDays = null
+    this.maxRegressionNlb = null
 
     this.drawChart()
     this.setupRangeListener()
@@ -41,45 +43,55 @@ class RegressionChart {
       .attr('width', innerWidth)
       .attr('height', innerHeight)
 
-    // X and Y limits for the chart
-    const xMax = data.length
-    const yMax = d3.max(data, (d) => d.forwardMinimumPrice)
+    // Set initial max vals for chart
+    this.maxDays = data.length - 1
+    this.maxRegressionNlb = regressionData[data.length-1].regressionNlb
 
     //===========================================================================
 
     // Forward minimum line scales
-    var xScale = d3.scaleSqrt().rangeRound([0, innerWidth])
-    var yScale = d3.scaleLog().rangeRound([innerHeight, 0])
+    const xScale = d3.scaleSqrt().rangeRound([0, innerWidth])
+    const yScale = d3.scaleLog().rangeRound([innerHeight, 0])
 
-    xScale.domain([0, xMax])
-    yScale.domain([d3.min(data, (d) => d.forwardMinimumPrice), yMax])
-
-    // Create forward minimum line
-    var forwardMinLine = d3.line()
-      .x(d => xScale(d.index))
-      .y(d => yScale(d.forwardMinimumPrice))
+    // Regression line scales
+    const xScale2 = d3.scaleLinear().rangeRound([0, innerWidth])
+    const yScale2 = d3.scaleLinear().rangeRound([innerHeight, 0])
 
     //===========================================================================
 
-    // Regression line scales
-    var xScale2 = d3.scaleLinear().rangeRound([0, innerWidth])
-    var yScale2 = d3.scaleLinear().rangeRound([innerHeight, 0])
+    this.setScale = (maxDays, maxRegressionNlb) => {
+      xScale.domain([0, this.maxDays])
+      yScale.domain([d3.min(data, (d) => d.forwardMinimumPrice), Math.pow(10, this.maxRegressionNlb)])
 
-    xScale2.domain([0, Math.sqrt(xMax)])
-    yScale2.domain([d3.min(data, (d) => d.log10forwardMinimumPrice), Math.log10(yMax)])
+      xScale2.domain([0, Math.sqrt(this.maxDays)])
+      yScale2.domain([d3.min(data, (d) => d.log10forwardMinimumPrice), this.maxRegressionNlb])
+    }
+
+    this.setScale(null, null)
+
+    //===========================================================================
+    // Lines for scale1
+
+    // Create forward minimum line
+    const forwardMinLine = d3.line()
+      .x(d => xScale(d.index))
+      .y(d => yScale(d.forwardMinimumPrice))
+
+    // ==========================================================================
+    // Lines for scale 2
 
     // Create regression lines
-    var regressionLine = d3.line()
+    const regressionLine = d3.line()
       .x(d => xScale2(d.sqrtDaysPassed))
       .y(d => yScale2(d.regressionNlb))
 
     // Standard deviation line - top
-    var regressionLineTop = d3.line()
+    const regressionLineTop = d3.line()
       .x(d => xScale2(d.sqrtDaysPassed))
       .y(d => yScale2(d.regressionNlb + standardDeviation))
 
     // Standard deviation line - bottom
-    var regressionLineBottom = d3.line()
+    const regressionLineBottom = d3.line()
       .x(d => xScale2(d.sqrtDaysPassed))
       .y(d => yScale2(d.regressionNlb - standardDeviation))
 
@@ -90,40 +102,46 @@ class RegressionChart {
       .filter(i => i.date.getMonth() == 0 && i.date.getDate() == 1)
       .map(i => i.index)
 
-    // A tick for each order of magnitude in price
-    const yTickValues = [0.1, 1, 10, 100, 1000, 10000, 100000, 1000000, 10000000]
+    // A tick for each order of magnitude in price.
+    // From 0.1 to 10,000,000.
+    const yTickValues = Array(9).fill(null).map((val, i) => Math.pow(10, i-1))
+
+    const xGridCall = d3.axisBottom(xScale)
+      .tickSize(-innerHeight)
+      .tickFormat('')
+      .tickValues(xTickVals)
+
+    const yGridCall = d3.axisLeft(yScale)
+      .tickValues(yTickValues)
+      .tickSize(-innerWidth)
+      .tickFormat('')
+
+    const xAxisCall = d3.axisBottom(xScale)
+      .tickFormat((i) =>
+        moment(data[0].date).add(i, 'days').format('`YY')
+      )
+      .tickValues(xTickVals)
+
+    const yAxisCall = d3.axisLeft(yScale)
+      .tickFormat(d3.format(",.1f"))
+      .tickValues(yTickValues)
 
     // X gridlines - Draw gridlines first to put beneath axis
     g.append('g')
       .attr('transform', `translate(0, ${innerHeight})`)
-      .attr('class', 'grid')
-      .call(
-        d3.axisBottom(xScale)
-          .tickSize(-innerHeight)
-          .tickFormat('')
-          .tickValues(xTickVals)
-      )
+      .attr('class', 'x grid')
+      .call(xGridCall)
 
     // Y gridlines
     g.append('g')
-      .attr('class', 'grid')
-      .call(
-        d3.axisLeft(yScale)
-          .tickValues(yTickValues)
-          .tickSize(-innerWidth)
-          .tickFormat('')
-      )
+      .attr('class', 'y grid')
+      .call(yGridCall)
 
     // Bottom axis - forward min - Date
     g.append('g')
+      .attr('class', 'x axis')
       .attr('transform', `translate(0, ${innerHeight})`)
-      .call(
-        d3.axisBottom(xScale)
-          .tickFormat((i) =>
-            moment(data[0].date).add(i, 'days').format('`YY')
-          )
-          .tickValues(xTickVals)
-      )
+      .call(xAxisCall)
       .append('text')
       .attr('class', 'axis-text')
       .attr('x', 30)
@@ -134,11 +152,8 @@ class RegressionChart {
 
     // Left axis - forward min - Price
     g.append('g')
-      .call(
-        d3.axisLeft(yScale)
-          .tickFormat(d3.format(",.1f"))
-          .tickValues(yTickValues)
-      )
+      .attr('class', 'y axis')
+      .call(yAxisCall)
       .append('text')
       .attr('class', 'axis-text')
       .attr('transform', 'rotate(-90)')
@@ -146,12 +161,6 @@ class RegressionChart {
       .attr('dy', '0.71em')
       .attr('text-anchor', 'end')
       .text('Price ($)')
-
-    // Append the path
-    g.append('path')
-      .datum(data)
-      .attr('class', 'path-line path-forward-min-price')
-      .attr('d', forwardMinLine)
 
     // Append a clip path for the chart area, so lines don't overflow.
     // Only really used for bottom clipping since top and right edges
@@ -164,26 +173,64 @@ class RegressionChart {
       .attr('width', innerWidth + margin.right)
       .attr('height', innerHeight + margin.top)
 
+    // Append the path
+    const forwardMinLinePath = g.append('path')
+      .datum(data)
+      .attr('class', 'path-line path-forward-min-price')
+      .attr('d', forwardMinLine)
+
     // Append the regression line
-    g.append('path')
+    const regressionLinePath = g.append('path')
       .datum(regressionData)
       .attr('class', 'path-line path-regression')
       .attr('clip-path', "url(#regression_chart_clip)")
       .attr('d', regressionLine)
 
     // Top variation
-    g.append('path')
+    const topDeviationPath = g.append('path')
       .datum(regressionData)
       .attr('class', 'path-line path-regression-std-dev')
       .attr('clip-path', "url(#regression_chart_clip)")
       .attr('d', regressionLineTop)
 
     // Bottom variation
-    g.append('path')
+    const bottomDeviationPath = g.append('path')
       .datum(regressionData)
       .attr('class', 'path-line path-regression-std-dev')
       .attr('clip-path', "url(#regression_chart_clip)")
       .attr('d', regressionLineBottom)
+
+    // Re-call and re-attr the axes and line paths.
+    // Possible to do this way thanks to closures; 'g', 'pricePath', etc.,
+    // are still available in this function even if it's called outside this
+    // context.
+    this.rescale = () => {
+      this.setScale()
+
+      g.select('.x.grid')
+        .call(xGridCall)
+
+      g.select('.y.grid')
+        .call(yGridCall)
+
+      g.select('.x.axis')
+        .call(xAxisCall)
+
+      g.select('.y.axis')
+        .call(yAxisCall)
+
+      forwardMinLinePath
+        .attr('d', forwardMinLine)
+
+      regressionLinePath
+        .attr('d', regressionLine)
+
+      topDeviationPath
+        .attr('d', regressionLineTop)
+
+      bottomDeviationPath
+        .attr('d', regressionLineBottom)
+    }
 
     // Append verticle line - must be appended to a group, not rect
     const mouseLine = g.append('line')
@@ -284,7 +331,31 @@ class RegressionChart {
   }
 
   setupRangeListener = () => {
-    console.log('implement RegressionChart#setupRangeListener()')
+    document.querySelector('#regression_chart_range')
+      .addEventListener('input', this.rangeChange)
+  }
+
+  mapInputRangeToDays = (inputRangeValue) => {
+    inputRangeValue = 100 - inputRangeValue
+    const min = this.chartData.data.length
+    const max = 10000 - 1 // Constants.regressionData.maxDays
+    const rangeDiff = max - min
+    const percent = inputRangeValue / 100
+    const offset = rangeDiff * percent
+    const pos = min + offset
+    return Math.round(pos)
+  }
+
+  rangeChange = (e) => {
+    const maxDays = this.mapInputRangeToDays(e.target.value)
+
+    const { data, regressionData } = this.chartData
+    const maxRegressionNlb = regressionData[maxDays].regressionNlb
+
+    this.maxDays = maxDays
+    this.maxRegressionNlb = maxRegressionNlb
+
+    this.rescale()
   }
 }
 

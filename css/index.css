@@ -228,6 +228,7 @@ div.data-points {
   display: flex;
   justify-content: space-between;
   align-items: stretch;
+  margin: 10px 0;
 }
 
 div.data-points > div {
@@ -259,7 +260,7 @@ div.data-points tr:last-child {
 
 div.data-points tr.expected {
   font-weight: bold;
-  color: #03a9f4;
+  color: #ff699c;
 }
 
 div.data-points tr.deviation {

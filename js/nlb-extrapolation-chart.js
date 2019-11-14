@@ -5,9 +5,22 @@ import { moneyFormat } from './util.js'
 class ExtrapolationChart {
   constructor(chartData) {
     this.chartData = chartData
+    this.maxDays = null
+    this.maxPrice = null
+    this.priceToRegressionRatio = this.getPriceToRegressionRatio()
 
     this.drawChart()
     this.setupRangeListener()
+  }
+
+  // Do this calculation once at the start so that we don't have to do the
+  // d3.max on every chart rescale.
+  getPriceToRegressionRatio = () => {
+    const { data } = this.chartData
+    const origMaxPrice = d3.max(data, (d) => d.price)
+    const origMaxRegressionNlb = Math.pow(10, data[data.length-1].regressionNlb)
+    const ratio = origMaxPrice / origMaxRegressionNlb
+    return ratio
   }
 
   drawChart = (chartData) => {
@@ -35,40 +48,41 @@ class ExtrapolationChart {
       .attr('class', 'chart-svg')
 
     // Create and append the main group
-    var g = svg.append('g')
+    const g = svg.append('g')
       .attr('transform', `translate(${margin.left}, ${margin.top})`)
 
+    // Set initial max vals for chart
+    this.maxDays = data.length - 1
+    this.maxPrice = d3.max(data, (d) => d.price)
+
     // Create scales
-    var xScale = d3.scaleTime().rangeRound([0, innerWidth])
-    var yScale = d3.scaleLinear().rangeRound([innerHeight, 0])
+    const xScale = d3.scaleTime().rangeRound([0, innerWidth])
+    const yScale = d3.scaleLinear().rangeRound([innerHeight, 0])
 
-    this.setScale = (maxDays, maxPrice) => {
-      maxDays = maxDays || data.length - 1
-      maxPrice = maxPrice || d3.max(data, (d) => d.price)
-
-      xScale.domain([data[0].date, moment(data[0].date).add(maxDays, 'days').toDate()])
-      yScale.domain([0, maxPrice])
+    this.setScale = () => {
+      xScale.domain([data[0].date, moment(data[0].date).add(this.maxDays, 'days').toDate()])
+      yScale.domain([0, this.maxPrice])
     }
 
     this.setScale(null, null)
 
     // Create price line
-    var priceLine = d3.line()
+    const priceLine = d3.line()
       .x(d => xScale(d.date))
       .y(d => yScale(d.price))
 
     // Create extrapolation line
-    var extrapolationLine = d3.line()
+    const extrapolationLine = d3.line()
       .x(d => xScale(d.date))
       .y(d => yScale(Math.pow(10, d.regressionNlb)))
 
     // Create extrapolation line
-    var extrapolationLineTop = d3.line()
+    const extrapolationLineTop = d3.line()
       .x(d => xScale(d.date))
       .y(d => yScale(Math.pow(10, d.regressionNlb + standardDeviation)))
 
     // Create extrapolation line
-    var extrapolationLineBottom = d3.line()
+    const extrapolationLineBottom = d3.line()
       .x(d => xScale(d.date))
       .y(d => yScale(Math.pow(10, d.regressionNlb - standardDeviation)))
 
@@ -124,7 +138,7 @@ class ExtrapolationChart {
       .attr('height', innerHeight + margin.top)
 
     // Append the price line
-    const pricePath = g.append('path')
+    const priceLinePath = g.append('path')
       .datum(data)
       .attr('class', 'path-line path-price')
       .attr('clip-path', "url(#extrapolation_chart_clip)")
@@ -156,6 +170,8 @@ class ExtrapolationChart {
     // are still available in this function even if it's called outside this
     // context.
     this.rescale = () => {
+      this.setScale()
+
       g.select('.x.grid')
         .call(xGridCall)
 
@@ -168,7 +184,7 @@ class ExtrapolationChart {
       g.select('.y.axis')
         .call(yAxisCall)
 
-      pricePath
+      priceLinePath
         .attr('d', priceLine)
 
       regressionLinePath
@@ -301,15 +317,14 @@ class ExtrapolationChart {
     const maxDays = this.mapInputRangeToDays(e.target.value)
 
     // Determine the max price for the scale in a way that keeps its x,y
-    // position the same for the last x point on the chart
-    const { data, regressionData } = this.chartData
-    const origMaxPrice = d3.max(data, (d) => d.price)
-    const origMaxRegressionNlb = Math.pow(10, data[data.length-1].regressionNlb)
-    const ratio = origMaxPrice / origMaxRegressionNlb
+    // position the same for the last x point on the chart.
+    const { regressionData } = this.chartData
     const maxDayRegressionNlb = Math.pow(10, regressionData[maxDays].regressionNlb)
-    const maxPrice = maxDayRegressionNlb * ratio
+    const maxPrice = maxDayRegressionNlb * this.priceToRegressionRatio
 
-    this.setScale(maxDays, maxPrice)
+    this.maxDays = maxDays
+    this.maxPrice = maxPrice
+
     this.rescale()
   }
 }
