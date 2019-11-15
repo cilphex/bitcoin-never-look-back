@@ -9,11 +9,6 @@ class RegressionChart {
     this.maxDays = null
     this.maxRegressionNlb = null
 
-    this.drawChart = this.drawChart.bind(this)
-    this.setupRangeListener = this.setupRangeListener.bind(this)
-    this.mapInputRangeToDays = this.mapInputRangeToDays.bind(this)
-    this.rangeChange = this.rangeChange.bind(this)
-
     this.drawChart()
     this.setupRangeListener()
   }
@@ -336,7 +331,7 @@ class RegressionChart {
 
   setupRangeListener() {
     document.querySelector('#regression_chart_range')
-      .addEventListener('input', this.rangeChange)
+      .addEventListener('input', this.rangeChange.bind(this))
   }
 
   mapInputRangeToDays(inputRangeValue) {

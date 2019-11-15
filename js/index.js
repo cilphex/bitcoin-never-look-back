@@ -11,5 +11,3 @@ new BasicChart(chartData)
 new RegressionChart(chartData)
 new ExtrapolationChart(chartData)
 new DataPointManager(chartData)
-
-console.log('okay', Math.random())

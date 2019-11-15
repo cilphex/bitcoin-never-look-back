@@ -7,9 +7,6 @@ class BasicChart {
     this.containerElement = '#basic_chart'
     this.chartData = chartData
 
-    // Manually bind class functions
-    this.drawChart = this.drawChart.bind(this)
-
     this.drawChart()
   }
 

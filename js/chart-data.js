@@ -9,16 +9,6 @@ class ChartData {
     this.regressionData = this.getRegressionData()
     this.standardDeviation = this.getStandardDeviation()
 
-    // Manually bind class functions for Safari
-    this.reverseData = this.reverseData.bind(this)
-    this.parseData = this.parseData.bind(this)
-    this.expandData = this.expandData.bind(this)
-    this.setupRegressionFunctions = this.setupRegressionFunctions.bind(this)
-    this.addRegressionFields = this.addRegressionFields.bind(this)
-    this.formatData = this.formatData.bind(this)
-    this.getRegressionData = this.getRegressionData.bind(this)
-    this.getStandardDeviation = this.getStandardDeviation.bind(this)
-
     // Tmp, for testing
     window.datax = this.data
     window.regressionDatax = this.regressionData

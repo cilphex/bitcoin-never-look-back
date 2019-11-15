@@ -9,11 +9,6 @@ class ExtrapolationChart {
     this.maxPrice = null
     this.priceToRegressionRatio = this.getPriceToRegressionRatio()
 
-    this.drawChart = this.drawChart.bind(this)
-    this.setupRangeListener = this.setupRangeListener.bind(this)
-    this.mapInputRangeToDays = this.mapInputRangeToDays.bind(this)
-    this.rangeChange = this.rangeChange.bind(this)
-
     this.drawChart()
     this.setupRangeListener()
   }
@@ -303,7 +298,7 @@ class ExtrapolationChart {
 
   setupRangeListener() {
     document.querySelector('#extrapolation_chart_range')
-      .addEventListener('input', this.rangeChange)
+      .addEventListener('input', this.rangeChange.bind(this))
   }
 
   mapInputRangeToDays(inputRangeValue) {
