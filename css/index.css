@@ -297,5 +297,6 @@ div.data-points td:first-child {
 }
 
 div.data-points tr:last-child td {
+  padding-bottom: 0;
   border: none;
 }

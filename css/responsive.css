@@ -34,6 +34,7 @@
   }
 
   div.data-points > div {
+    flex-basis: auto;
     margin: 0 0 10px;
   }
 }
