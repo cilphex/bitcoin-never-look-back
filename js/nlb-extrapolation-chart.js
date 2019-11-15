@@ -9,13 +9,18 @@ class ExtrapolationChart {
     this.maxPrice = null
     this.priceToRegressionRatio = this.getPriceToRegressionRatio()
 
+    this.drawChart = this.drawChart.bind(this)
+    this.setupRangeListener = this.setupRangeListener.bind(this)
+    this.mapInputRangeToDays = this.mapInputRangeToDays.bind(this)
+    this.rangeChange = this.rangeChange.bind(this)
+
     this.drawChart()
     this.setupRangeListener()
   }
 
   // Do this calculation once at the start so that we don't have to do the
   // d3.max on every chart rescale.
-  getPriceToRegressionRatio = () => {
+  getPriceToRegressionRatio() {
     const { data } = this.chartData
     const origMaxPrice = d3.max(data, (d) => d.price)
     const origMaxRegressionNlb = Math.pow(10, data[data.length-1].regressionNlb)
@@ -23,7 +28,7 @@ class ExtrapolationChart {
     return ratio
   }
 
-  drawChart = (chartData) => {
+  drawChart(chartData) {
     const {
       data,
       regressionData,
@@ -296,12 +301,12 @@ class ExtrapolationChart {
     }
   }
 
-  setupRangeListener = () => {
+  setupRangeListener() {
     document.querySelector('#extrapolation_chart_range')
       .addEventListener('input', this.rangeChange)
   }
 
-  mapInputRangeToDays = (inputRangeValue) => {
+  mapInputRangeToDays(inputRangeValue) {
     inputRangeValue = 100 - inputRangeValue
     const min = this.chartData.data.length
     const max = 10000 - 1 // Constants.regressionData.maxDays
@@ -312,7 +317,7 @@ class ExtrapolationChart {
     return Math.round(pos)
   }
 
-  rangeChange = (e) => {
+  rangeChange(e) {
     const maxDays = this.mapInputRangeToDays(e.target.value)
 
     // Determine the max price for the scale in a way that keeps its x,y

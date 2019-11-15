@@ -9,23 +9,33 @@ class ChartData {
     this.regressionData = this.getRegressionData()
     this.standardDeviation = this.getStandardDeviation()
 
+    // Manually bind class functions for Safari
+    this.reverseData = this.reverseData.bind(this)
+    this.parseData = this.parseData.bind(this)
+    this.expandData = this.expandData.bind(this)
+    this.setupRegressionFunctions = this.setupRegressionFunctions.bind(this)
+    this.addRegressionFields = this.addRegressionFields.bind(this)
+    this.formatData = this.formatData.bind(this)
+    this.getRegressionData = this.getRegressionData.bind(this)
+    this.getStandardDeviation = this.getStandardDeviation.bind(this)
+
     // Tmp, for testing
     window.datax = this.data
     window.regressionDatax = this.regressionData
   }
 
-  reverseData = () => {
+  reverseData() {
     this.data.reverse()
   }
 
-  parseData = () => {
+  parseData() {
     this.data.forEach((item, index) => this.data[index] = {
       date: new Date(item.date),
       price: parseFloat(item.price.replace(/,/g, ''))
     })
   }
 
-  expandData = () => {
+  expandData() {
     this.data.forEach((item, index) => {
       var forwardData = this.data.slice(index)
       var min = item.price
@@ -41,7 +51,7 @@ class ChartData {
     })
   }
 
-  setupRegressionFunctions = () => {
+  setupRegressionFunctions() {
     this.regressionPriceFn = mathTools.linearRegression(
       this.data.map(i => i.index),
       this.data.map(i => i.price)
@@ -53,14 +63,14 @@ class ChartData {
     )
   }
 
-  addRegressionFields = () => {
+  addRegressionFields() {
     this.data.forEach(item => {
       item.regressionPrice = this.regressionPriceFn(item.index)
       item.regressionNlb = this.regressionNlbFn(item.sqrtDaysPassed)
     })
   }
 
-  formatData = () => {
+  formatData() {
     this.reverseData()
     this.parseData()
     this.expandData()
@@ -73,7 +83,7 @@ class ChartData {
    * (non-extrapolated) fields, because it's easier in some cases to use
    * regressionData by itself for both, rather than regressionData + data.
    */
-  getRegressionData = () => {
+  getRegressionData() {
     const { maxDays } = Constants.regressionData
 
     return Array(maxDays).fill(null).map((val, i) => {
@@ -95,7 +105,7 @@ class ChartData {
     })
   }
 
-  getStandardDeviation = () => {
+  getStandardDeviation() {
     const vals1 = this.data.map(item => item.log10forwardMinimumPrice)
     const vals2 = this.data.map(item => item.regressionNlb)
 

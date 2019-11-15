@@ -9,13 +9,13 @@ class DataPointManager {
     this.fillData()
   }
 
-  fillData = () => {
+  fillData() {
     this.fillToday()
     this.fill5Years()
     this.fillMagnitudes()
   }
 
-  fillToday = () => {
+  fillToday() {
     const { regressionData, standardDeviation } = this.chartData
 
     const todayData = regressionData.find(i =>
@@ -39,7 +39,7 @@ class DataPointManager {
     )
   }
 
-  fill5Years = () => {
+  fill5Years() {
     const { regressionData } = this.chartData
 
     const years = Array(5).fill(null)
@@ -68,7 +68,7 @@ class DataPointManager {
       .text(d => d)
   }
 
-  fillMagnitudes = () => {
+  fillMagnitudes() {
     const { regressionData } = this.chartData
 
     const magnitudes = Array(5).fill(null)
