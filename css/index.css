@@ -199,10 +199,6 @@ div.slider-container {
   align-items: center;
   margin: 20px 0;
   height: 20px; /* Height of the slider thumb. */
-
-  position: relative;
-  margin: 20px auto;
-  width: 200px;
 }
 
 input.chart-range {
