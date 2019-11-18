@@ -238,10 +238,11 @@ input.chart-range::after {
   display: block;
   width: 10px;
   height: 10px;
-  top: 5px;
-  left: 124px;
+  top: 3px;
+  left: 122px;
   font-size: 0;
   background: #00da0a;
+  border: 2px solid #fff;
   border-radius: 10px;
   content: ".";
 }
