@@ -199,6 +199,10 @@ div.slider-container {
   align-items: center;
   margin: 20px 0;
   height: 20px; /* Height of the slider thumb. */
+
+  position: relative;
+  margin: 20px auto;
+  width: 200px;
 }
 
 input.chart-range {
@@ -227,6 +231,19 @@ input.chart-range::-webkit-slider-thumb {
   background: #fff;
   border: 3px solid #00da0a;
   border-radius: 100px;
+}
+
+input.chart-range::after {
+  position: absolute;
+  display: block;
+  width: 10px;
+  height: 10px;
+  top: 5px;
+  left: 124px;
+  font-size: 0;
+  background: #00da0a;
+  border-radius: 10px;
+  content: ".";
 }
 
 .mouse-overlay {
