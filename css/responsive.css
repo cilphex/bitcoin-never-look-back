@@ -27,10 +27,5 @@
   div.content {
     margin-bottom: 0;
   }
-
-  input.chart-range::-webkit-slider-thumb {
-    width: 20px;
-    height: 20px;
-  }
 }
 
