@@ -1,7 +1,6 @@
-import Constants from './constants.js'
 import d3 from './external/d3.js'
 import moment from './external/moment.js'
-import { moneyFormat } from './util.js'
+import { moneyFormat, updateAllText, updateAllStyles } from './util.js'
 
 class RegressionChart {
   constructor(chartData) {
@@ -265,19 +264,23 @@ class RegressionChart {
       .on('mouseover', mouseOver)
       .on('mouseout', mouseOut)
       .on('mousemove', mouseMove)
+      .on('touchstart', mouseOver)
+      .on('touchend', mouseOut)
+      .on('touchmove', mouseMove)
+
 
     const bisectSqrtDaysPassed = d3.bisector((d) => d.sqrtDaysPassed).right
 
     function mouseOver() {
       g.select('.mouse-line').style('visibility', 'visible')
       g.selectAll('.mouse-circle').style('visibility', 'visible')
-      document.querySelector('#regression_chart_data').style.visibility = 'visible'
+      updateAllStyles('#regression .chart-data', 'visibility', 'visible')
     }
 
     function mouseOut() {
       g.select('.mouse-line').style('visibility', 'hidden')
       g.selectAll('.mouse-circle').style('visibility', 'hidden')
-      document.querySelector('#regression_chart_data').style.visibility = 'hidden'
+      updateAllStyles('#regression .chart-data', 'visibility', 'hidden')
     }
 
     function mouseMove() {
@@ -296,13 +299,11 @@ class RegressionChart {
         g.select('.mouse-circle-forward-minimum')
           .style('visibility', 'visible')
           .attr('transform', `translate(${xPos},${yPosPrice})`)
-        document.querySelector('#regression_chart_data .forward-minimum')
-          .textContent = moneyFormat(item.forwardMinimumPrice)
+        updateAllText('#regression .forward-minimum', moneyFormat(item.forwardMinimumPrice))
       }
       else {
         g.select('.mouse-circle-forward-minimum').style('visibility', 'hidden')
-        document.querySelector('#regression_chart_data .forward-minimum')
-          .textContent = '???'
+        updateAllText('#regression .forward-minimum', '???')
       }
 
       const regressionPrice = Math.pow(10, item.regressionNlb)
@@ -318,14 +319,10 @@ class RegressionChart {
       mouseCircleRegressionMax.attr('transform', `translate(${xPos},${yPosRegressionMax})`)
       mouseCircleRegressionMin.attr('transform', `translate(${xPos},${yPosRegressionMin})`)
 
-      document.querySelector('#regression_chart_data .expected')
-        .textContent = moneyFormat(regressionPrice)
-      document.querySelector('#regression_chart_data .d-max')
-        .textContent = moneyFormat(regressionPriceMax)
-      document.querySelector('#regression_chart_data .d-min')
-        .textContent = moneyFormat(regressionPriceMin)
-      document.querySelector('#regression_chart_data .date')
-        .textContent = moment(item.date).format('MMM D, YYYY')
+      updateAllText('#regression .expected', moneyFormat(regressionPrice))
+      updateAllText('#regression .d-max', moneyFormat(regressionPriceMax))
+      updateAllText('#regression .d-min', moneyFormat(regressionPriceMin))
+      updateAllText('#regression .date', moment(item.date).format('MMM D, YYYY'))
     }
   }
 

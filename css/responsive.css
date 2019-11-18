@@ -1,30 +1,10 @@
 @media (max-width: 750px) {
-  div.chart-header {
-    position: relative;
+  div.chart-data-top {
+    display: none;
   }
 
-  div.chart-data {
-    flex-direction: column;
-    align-items: flex-end;
-
-    position: absolute;
-    right: 0;
-    bottom: -11px;
-    padding: 10px;
-    background: #fafafa;
-    background-image: linear-gradient(to bottom, #eee 0%, #fafafa 25%);
-    border: 1px solid #eee;
-    border-bottom: none;
-  }
-
-  div.chart-data div.numbers {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-  }
-
-  div.chart-data div.numbers span {
-    margin: 0;
+  table.chart-data-overlay {
+    display: block;
   }
 }
 

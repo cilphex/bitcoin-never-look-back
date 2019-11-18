@@ -1,6 +1,6 @@
 import d3 from './external/d3.js'
 import moment from './external/moment.js'
-import { moneyFormat } from './util.js'
+import { moneyFormat, updateAllText, updateAllStyles } from './util.js'
 
 class BasicChart {
   constructor(chartData) {
@@ -124,19 +124,22 @@ class BasicChart {
       .on('mouseover', mouseOver)
       .on('mouseout', mouseOut)
       .on('mousemove', mouseMove)
+      .on('touchstart', mouseOver)
+      .on('touchend', mouseOut)
+      .on('touchmove', mouseMove)
 
     const bisectDate = d3.bisector((d) => d.date).right
 
     function mouseOver() {
       g.select('.mouse-line').style('visibility', 'visible')
       g.selectAll('.mouse-circle').style('visibility', 'visible')
-      document.querySelector('#basic_chart_data').style.visibility = 'visible'
+      updateAllStyles('#basic .chart-data', 'visibility', 'visible')
     }
 
     function mouseOut() {
       g.select('.mouse-line').style('visibility', 'hidden')
       g.selectAll('.mouse-circle').style('visibility', 'hidden')
-      document.querySelector('#basic_chart_data').style.visibility = 'hidden'
+      updateAllStyles('#basic .chart-data', 'visibility', 'hidden')
     }
 
     function mouseMove() {
@@ -157,12 +160,9 @@ class BasicChart {
       mouseCirclePrice.attr('transform', `translate(${xPos},${yPosPrice})`)
       mouseCircleNlb.attr('transform', `translate(${xPos},${yPosForwardMinimum})`)
 
-      document.querySelector('#basic_chart_data .price')
-        .textContent = moneyFormat(item.price)
-      document.querySelector('#basic_chart_data .forward-minimum')
-        .textContent = moneyFormat(item.forwardMinimumPrice)
-      document.querySelector('#basic_chart_data .date')
-        .textContent = moment(item.date).format('MMM D, YYYY')
+      updateAllText('#basic .price', moneyFormat(item.price))
+      updateAllText('#basic .forward-minimum', moneyFormat(item.forwardMinimumPrice))
+      updateAllText('#basic .date', moment(item.date).format('MMM D, YYYY'))
     }
   }
 }

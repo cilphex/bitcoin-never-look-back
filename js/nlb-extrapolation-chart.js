@@ -1,6 +1,6 @@
 import d3 from './external/d3.js'
 import moment from './external/moment.js'
-import { moneyFormat } from './util.js'
+import { moneyFormat, updateAllText, updateAllStyles } from './util.js'
 
 class ExtrapolationChart {
   constructor(chartData) {
@@ -230,19 +230,25 @@ class ExtrapolationChart {
       .on('mouseover', mouseOver)
       .on('mouseout', mouseOut)
       .on('mousemove', mouseMove)
+      .on('touchstart', mouseOver)
+      .on('touchend', mouseOut)
+      .on('touchmove', mouseMove)
+
 
     const bisectDate = d3.bisector((d) => d.date).right
 
     function mouseOver() {
       g.select('.mouse-line').style('visibility', 'visible')
       g.selectAll('.mouse-circle').style('visibility', 'visible')
-      document.querySelector('#extrapolation_chart_data').style.visibility = 'visible'
+      // document.querySelector('#extrapolation_chart_data').style.visibility = 'visible'
+      updateAllStyles('#extrapolation .chart-data', 'visibility', 'visible')
     }
 
     function mouseOut() {
       g.select('.mouse-line').style('visibility', 'hidden')
       g.selectAll('.mouse-circle').style('visibility', 'hidden')
-      document.querySelector('#extrapolation_chart_data').style.visibility = 'hidden'
+      // document.querySelector('#extrapolation_chart_data').style.visibility = 'hidden'
+      updateAllStyles('#extrapolation .chart-data', 'visibility', 'hidden')
     }
 
     function mouseMove() {
@@ -263,13 +269,11 @@ class ExtrapolationChart {
         g.select('.mouse-circle-price')
           .style('visibility', 'visible')
           .attr('transform', `translate(${xPos},${yPosPrice})`)
-        document.querySelector('#extrapolation_chart_data .price')
-          .textContent = moneyFormat(item.price)
+        updateAllText('#extrapolation .price', moneyFormat(item.price))
       }
       else {
         g.select('.mouse-circle-price').style('visibility', 'hidden')
-        document.querySelector('#extrapolation_chart_data .price')
-          .textContent = '???'
+        updateAllText('#extrapolation .price', '???')
       }
 
       const regressionPrice = Math.pow(10, item.regressionNlb)
@@ -285,14 +289,10 @@ class ExtrapolationChart {
       mouseCircleRegressionMax.attr('transform', `translate(${xPos},${yPosRegressionMax})`)
       mouseCircleRegressionMin.attr('transform', `translate(${xPos},${yPosRegressionMin})`)
 
-      document.querySelector('#extrapolation_chart_data .expected')
-        .textContent = moneyFormat(regressionPrice)
-      document.querySelector('#extrapolation_chart_data .d-max')
-        .textContent = moneyFormat(regressionPriceMax)
-      document.querySelector('#extrapolation_chart_data .d-min')
-        .textContent = moneyFormat(regressionPriceMin)
-      document.querySelector('#extrapolation_chart_data .date')
-        .textContent = moment(item.date).format('MMM D, YYYY')
+      updateAllText('#extrapolation .expected', moneyFormat(regressionPrice))
+      updateAllText('#extrapolation .d-max', moneyFormat(regressionPriceMax))
+      updateAllText('#extrapolation .d-min', moneyFormat(regressionPriceMin))
+      updateAllText('#extrapolation .date', moment(item.date).format('MMM D, YYYY'))
     }
   }
 
