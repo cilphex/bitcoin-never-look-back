@@ -205,7 +205,7 @@ input.chart-range {
   -webkit-appearance: none;
   appearance: none;
   width: 200px;
-  height: 2px;
+  height: 3px;
   background: #00f10b;
   border-radius: 100px;
   outline: none;
@@ -225,7 +225,7 @@ input.chart-range::-webkit-slider-thumb {
   width: 20px;
   height: 20px;
   background: #fff;
-  border: 2px solid #00f10b;
+  border: 3px solid #00f10b;
   border-radius: 100px;
 }
 
