@@ -233,20 +233,6 @@ input.chart-range::-webkit-slider-thumb {
   border-radius: 100px;
 }
 
-input.chart-range::after {
-  position: absolute;
-  display: block;
-  width: 10px;
-  height: 10px;
-  top: 3px;
-  left: 122px;
-  font-size: 0;
-  background: #00da0a;
-  border: 2px solid #fff;
-  border-radius: 10px;
-  content: ".";
-}
-
 .mouse-overlay {
   fill: none;
   /* Lets this rect detect mouseover events even though it otherwise
