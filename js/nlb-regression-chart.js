@@ -47,51 +47,36 @@ class RegressionChart {
 
     //===========================================================================
 
-    // Forward minimum line scales
+    // Create scales
     const xScale = d3.scaleSqrt().rangeRound([0, innerWidth])
     const yScale = d3.scaleLog().rangeRound([innerHeight, 0])
-
-    // Regression line scales
-    const xScale2 = d3.scaleLinear().rangeRound([0, innerWidth])
-    const yScale2 = d3.scaleLinear().rangeRound([innerHeight, 0])
-
-    //===========================================================================
 
     this.setScale = (maxDays, maxRegressionNlb) => {
       xScale.domain([0, this.maxDays])
       yScale.domain([d3.min(data, (d) => d.forwardMinimumPrice), Math.pow(10, this.maxRegressionNlb)])
-
-      xScale2.domain([0, Math.sqrt(this.maxDays)])
-      yScale2.domain([d3.min(data, (d) => d.log10forwardMinimumPrice), this.maxRegressionNlb])
     }
 
     this.setScale(null, null)
-
-    //===========================================================================
-    // Lines for scale1
 
     // Create forward minimum line
     const forwardMinLine = d3.line()
       .x(d => xScale(d.index))
       .y(d => yScale(d.forwardMinimumPrice))
 
-    // ==========================================================================
-    // Lines for scale 2
-
     // Create regression lines
     const regressionLine = d3.line()
-      .x(d => xScale2(d.sqrtDaysPassed))
-      .y(d => yScale2(d.regressionNlb))
+      .x(d => xScale(d.index))
+      .y(d => yScale(Math.pow(10, d.regressionNlb)))
 
     // Standard deviation line - top
     const regressionLineTop = d3.line()
-      .x(d => xScale2(d.sqrtDaysPassed))
-      .y(d => yScale2(d.regressionNlb + standardDeviation))
+      .x(d => xScale(d.index))
+      .y(d => yScale(Math.pow(10, d.regressionNlb + standardDeviation)))
 
     // Standard deviation line - bottom
     const regressionLineBottom = d3.line()
-      .x(d => xScale2(d.sqrtDaysPassed))
-      .y(d => yScale2(d.regressionNlb - standardDeviation))
+      .x(d => xScale(d.index))
+      .y(d => yScale(Math.pow(10, d.regressionNlb - standardDeviation)))
 
     //=======================================================
 
@@ -285,10 +270,9 @@ class RegressionChart {
 
     function mouseMove() {
       const mouse = d3.mouse(this)
-      const sqrtDaysPassed = xScale2.invert(mouse[0]) // map value from range to domain
-      const index = bisectSqrtDaysPassed(regressionData, sqrtDaysPassed) // get the index for the domain value
+      const index = Math.round(xScale.invert(mouse[0]))
       const item = regressionData[index]
-      const xPos = xScale2(sqrtDaysPassed)
+      const xPos = xScale(index)
 
       if (!item) {
         return

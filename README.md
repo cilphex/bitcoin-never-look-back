@@ -11,7 +11,6 @@ Publicly viewable at [bitcoin.craighammell.com](http://bitcoin.craighammell.com)
 
 ### Todo
 
-- 2 scales on chart #2 may be able to be merged if you plot `10^exponent` instead of just `exponent` as the regression line
 - Figure out what's going on with `constants.js` - not needed?
 - Variable renaming - inconsistencies w/ "nlb" & "forward minimum"
 - Add 2nd page for the [power law corridor](https://medium.com/coinmonks/bitcoins-natural-long-term-power-law-corridor-of-growth-649d0e9b3c94)
