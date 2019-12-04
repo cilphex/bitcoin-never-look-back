@@ -11,9 +11,10 @@ class BasicChart {
   }
 
   drawChart() {
-    let {
+    const {
       data,
-      regressionData
+      regressionData,
+      standardDeviationPlc
     } = this.chartData
 
     // Vars for dimensions
@@ -38,7 +39,7 @@ class BasicChart {
       .attr('transform', `translate(${margin.left}, ${margin.top})`)
 
     // Create scales
-    var xScale = d3.scaleLog().rangeRound([0, innerWidth])
+    var xScale = d3.scaleSqrt().rangeRound([0, innerWidth])
     var yScale = d3.scaleLog().rangeRound([innerHeight, 0])
 
     xScale.domain(d3.extent(data, (d) => d.index + 1))
@@ -48,6 +49,21 @@ class BasicChart {
     var priceLine = d3.line()
       .x(d => xScale(d.index + 1))
       .y(d => yScale(d.price))
+
+    // Create regression line
+    var regressionLine = d3.line()
+      .x(d => xScale(d.index + 1))
+      .y(d => yScale(Math.pow(10, d.regressionPlc)))
+
+    // Create regression through 3 peak prices
+    const regressionLineTop = d3.line()
+      .x(d => xScale(d.index + 1))
+      .y(d => yScale(Math.pow(10, d.regressionPlcTop)))
+
+    // Standard deviation line - bottom
+    const regressionLineBottom = d3.line()
+      .x(d => xScale(d.index + 1))
+      .y(d => yScale(Math.pow(10, d.regressionPlc - standardDeviationPlc)))
 
     // A tick for Jan 1. on each year
     const xTickVals = regressionData
@@ -105,11 +121,41 @@ class BasicChart {
       .attr('text-anchor', 'end')
       .text('Price ($)')
 
+    // Append the clip path
+    g.append('clipPath')
+      .attr('id', 'basic_chart_clip')
+      .append('rect')
+      .attr('x', 0)
+      .attr('y', 0 - margin.top)
+      .attr('width', innerWidth + margin.right)
+      .attr('height', innerHeight + margin.top)
+
     // Append the price line
     g.append('path')
       .datum(data)
       .attr('class', 'path-line path-price')
       .attr('d', priceLine)
+
+    // Append the regression line
+    g.append('path')
+      .datum(regressionData)
+      .attr('class', 'path-line path-regression')
+      .attr('clip-path', "url(#basic_chart_clip)")
+      .attr('d', regressionLine)
+
+    // Append regression through 3 peak prices
+    g.append('path')
+      .datum(regressionData)
+      .attr('class', 'path-line path-regression-std-dev')
+      .attr('clip-path', "url(#basic_chart_clip)")
+      .attr('d', regressionLineTop)
+
+    // Append regression standard deviation bottom
+    g.append('path')
+      .datum(regressionData)
+      .attr('class', 'path-line path-regression-std-dev')
+      .attr('clip-path', "url(#basic_chart_clip)")
+      .attr('d', regressionLineBottom)
   }
 }
 

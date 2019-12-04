@@ -27,7 +27,7 @@ class ExtrapolationChart {
     const {
       data,
       regressionData,
-      standardDeviation
+      standardDeviationNlb
     } = this.chartData
 
     // Vars for dimensions
@@ -78,12 +78,12 @@ class ExtrapolationChart {
     // Create extrapolation line
     const extrapolationLineTop = d3.line()
       .x(d => xScale(d.date))
-      .y(d => yScale(Math.pow(10, d.regressionNlb + standardDeviation)))
+      .y(d => yScale(Math.pow(10, d.regressionNlb + standardDeviationNlb)))
 
     // Create extrapolation line
     const extrapolationLineBottom = d3.line()
       .x(d => xScale(d.date))
-      .y(d => yScale(Math.pow(10, d.regressionNlb - standardDeviation)))
+      .y(d => yScale(Math.pow(10, d.regressionNlb - standardDeviationNlb)))
 
     const xGridCall = d3.axisBottom(xScale)
       .tickSize(-innerHeight)
@@ -277,8 +277,8 @@ class ExtrapolationChart {
       }
 
       const regressionPrice = Math.pow(10, item.regressionNlb)
-      const regressionPriceMax = Math.pow(10, item.regressionNlb + standardDeviation)
-      const regressionPriceMin = Math.pow(10, item.regressionNlb - standardDeviation)
+      const regressionPriceMax = Math.pow(10, item.regressionNlb + standardDeviationNlb)
+      const regressionPriceMin = Math.pow(10, item.regressionNlb - standardDeviationNlb)
 
       const yPosRegression = yScale(regressionPrice)
       const yPosRegressionMax = yScale(regressionPriceMax)

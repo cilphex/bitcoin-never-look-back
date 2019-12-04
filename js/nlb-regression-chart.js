@@ -16,7 +16,7 @@ class RegressionChart {
     const {
       data,
       regressionData,
-      standardDeviation
+      standardDeviationNlb
     } = this.chartData
 
     // Vars for dimensions
@@ -71,12 +71,12 @@ class RegressionChart {
     // Standard deviation line - top
     const regressionLineTop = d3.line()
       .x(d => xScale(d.index))
-      .y(d => yScale(Math.pow(10, d.regressionNlb + standardDeviation)))
+      .y(d => yScale(Math.pow(10, d.regressionNlb + standardDeviationNlb)))
 
     // Standard deviation line - bottom
     const regressionLineBottom = d3.line()
       .x(d => xScale(d.index))
-      .y(d => yScale(Math.pow(10, d.regressionNlb - standardDeviation)))
+      .y(d => yScale(Math.pow(10, d.regressionNlb - standardDeviationNlb)))
 
     //=======================================================
 
@@ -291,8 +291,8 @@ class RegressionChart {
       }
 
       const regressionPrice = Math.pow(10, item.regressionNlb)
-      const regressionPriceMax = Math.pow(10, item.regressionNlb + standardDeviation)
-      const regressionPriceMin = Math.pow(10, item.regressionNlb - standardDeviation)
+      const regressionPriceMax = Math.pow(10, item.regressionNlb + standardDeviationNlb)
+      const regressionPriceMin = Math.pow(10, item.regressionNlb - standardDeviationNlb)
 
       const yPosRegression = yScale(regressionPrice)
       const yPosRegressionMax = yScale(regressionPriceMax)
