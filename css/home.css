@@ -6,12 +6,15 @@ div.links a:visited {
   display: flex;
   align-items: center;
   height: 60px;
+  color: #167dc7;
+  opacity: 0.8;
   text-decoration: none;
   border-bottom: 1px solid #ccc;
 }
 
 div.links a:hover,
 div.links a:active {
+  opacity: 1.0;
 }
 
 div.links a:last-child {

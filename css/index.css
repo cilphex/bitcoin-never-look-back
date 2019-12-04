@@ -17,6 +17,17 @@ p {
   margin: 10px 0;
 }
 
+p.intro {
+  margin-bottom: 30px;
+}
+
+hr {
+  margin: 30px 0;
+  background: none;
+  border: none;
+  border-bottom: 1px solid #eee;
+}
+
 div.nav-wrap {
   border-bottom: 1px solid #ccc;
 }
@@ -74,6 +85,11 @@ h2 {
   margin: 30px 0 10px;
   font-size: 16px;
   color: #000;
+}
+
+div.text-block {
+  /*margin: 50px 0;*/
+  line-height: 1.6em;
 }
 
 div.description {

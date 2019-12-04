@@ -37,6 +37,16 @@
         <a href="https://twitter.com/hcburger1">Harold Christopher Burger</a>
       </p>
 
+      <div class="text-block">
+        <p>Bitcoin's Power Law Corridor is the channel within which it seems to
+        have been growing in price since its inception, when charted on log price
+        over square-root time.</p>
+
+        <p>The top top edge is a linear regression through Bitcoin's three bubble
+        peaks. The bottom line is the linear regression through the daily price,
+        minus standard deviation.</p>
+      </div>
+
       <div id="basic">
         <div class="chart-header">
           <h2>Power Law Corridor</h2>
@@ -82,6 +92,66 @@
         <div class="slider-container">
           <input type="range" id="basic_chart_range" class="chart-range" min="0" max="150" value="100">
         </div>
+      </div>
+
+      <div class="text-block">
+        <p>If we plot the same values on linear scales, we can see that it
+        shows exponential growth.</p>
+      </div>
+
+      <div id="extrapolation">
+        <div class="chart-header">
+          <h2>Linear Scales</h2>
+          <div class="chart-data chart-data-top">
+            <div class="date"></div>
+            <div>
+              Price: <span class="price"></span>
+              Max: <span class="deviation d-max"></span>
+              Expected: <span class="expected"></span>
+              Min: <span class="deviation d-min"></span>
+            </div>
+          </div>
+        </div>
+        <div class="chart-wrapper">
+          <table class="chart-data chart-data-overlay">
+            <tr>
+              <td>Date</td>
+              <td class="date"></td>
+            </tr>
+            <tr>
+              <td>Price</td>
+              <td class="price"></td>
+            </tr>
+            <tr>
+              <td>Max</td>
+              <td class="deviation d-max"></td>
+            </tr>
+            <tr>
+              <td>Expected</td>
+              <td class="expected"></td>
+            </tr>
+            <tr>
+              <td>Min</td>
+              <td class="deviation d-min"></td>
+            </tr>
+          </table>
+          <div id="extrapolation_chart" class="chart">
+            <div class="chart-loading">
+              <div>Loading&hellip;</div>
+            </div>
+          </div>
+        </div>
+        <div class="slider-container">
+          <input type="range" id="extrapolation_chart_range" class="chart-range" min="0" max="150" value="100">
+        </div>
+      </div>
+
+      <div class="footer">
+        <p class="true-til-not">
+          It's true until it's not.
+          <span class="take-a-while">But that might take a while.</span>
+        </p>
+        <p><a href="https://github.com/cilphex/bitcoin-never-look-back">Open source</a></p>
       </div>
     </div>
   </body>

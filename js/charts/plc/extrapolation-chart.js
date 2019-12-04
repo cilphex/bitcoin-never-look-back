@@ -4,6 +4,7 @@ import { moneyFormat, updateAllText, updateAllStyles } from '/js/util.js'
 
 class ExtrapolationChart {
   constructor(chartData) {
+    this.containerElement = '#extrapolation_chart'
     this.chartData = chartData
     this.maxDays = null
     this.maxPrice = null
@@ -18,16 +19,16 @@ class ExtrapolationChart {
   getPriceToRegressionRatio() {
     const { data } = this.chartData
     const origMaxPrice = d3.max(data, (d) => d.price)
-    const origMaxRegressionNlb = Math.pow(10, data[data.length-1].regressionNlb)
-    const ratio = origMaxPrice / origMaxRegressionNlb
+    const origMaxRegressionPlc = Math.pow(10, data[data.length-1].regressionPlc)
+    const ratio = origMaxPrice / origMaxRegressionPlc
     return ratio
   }
 
-  drawChart(chartData) {
+  drawChart() {
     const {
       data,
       regressionData,
-      standardDeviationNlb
+      standardDeviationPlc
     } = this.chartData
 
     // Vars for dimensions
@@ -38,25 +39,28 @@ class ExtrapolationChart {
     const innerHeight = height - margin.top - margin.bottom
 
     // Clear the container
-    document.querySelector('#extrapolation_chart').innerHTML = ''
+    document.querySelector(this.containerElement).innerHTML = ''
 
     // Create the chart SVG
-    const svg = d3.select('#extrapolation_chart')
+    const svg = d3.select(this.containerElement)
       .append('svg')
       .attr('viewBox', `0 0 ${width} ${height}`)
+      .attr('preserveAspectRatio', 'xMidYMid meet')
       .attr('class', 'chart-svg')
 
     // Create and append the main group
-    const g = svg.append('g')
+    var g = svg.append('g')
       .attr('transform', `translate(${margin.left}, ${margin.top})`)
 
     // Set initial max vals for chart
     this.maxDays = data.length - 1
     this.maxPrice = d3.max(data, (d) => d.price)
 
+    //===========================================================================
+
     // Create scales
-    const xScale = d3.scaleTime().rangeRound([0, innerWidth])
-    const yScale = d3.scaleLinear().rangeRound([innerHeight, 0])
+    var xScale = d3.scaleTime().rangeRound([0, innerWidth])
+    var yScale = d3.scaleLinear().rangeRound([innerHeight, 0])
 
     this.setScale = () => {
       xScale.domain([data[0].date, moment(data[0].date).add(this.maxDays, 'days').toDate()])
@@ -65,25 +69,27 @@ class ExtrapolationChart {
 
     this.setScale()
 
+    //===========================================================================
+
     // Create price line
-    const priceLine = d3.line()
+    var priceLine = d3.line()
       .x(d => xScale(d.date))
       .y(d => yScale(d.price))
 
-    // Create extrapolation line
-    const extrapolationLine = d3.line()
+    // Create regression line
+    var regressionLine = d3.line()
       .x(d => xScale(d.date))
-      .y(d => yScale(Math.pow(10, d.regressionNlb)))
+      .y(d => yScale(Math.pow(10, d.regressionPlc)))
 
-    // Create extrapolation line
-    const extrapolationLineTop = d3.line()
+    // Create regression through 3 peak prices
+    const regressionLineTop = d3.line()
       .x(d => xScale(d.date))
-      .y(d => yScale(Math.pow(10, d.regressionNlb + standardDeviationNlb)))
+      .y(d => yScale(Math.pow(10, d.regressionPlcTop)))
 
-    // Create extrapolation line
-    const extrapolationLineBottom = d3.line()
+    // Standard deviation line - bottom
+    const regressionLineBottom = d3.line()
       .x(d => xScale(d.date))
-      .y(d => yScale(Math.pow(10, d.regressionNlb - standardDeviationNlb)))
+      .y(d => yScale(Math.pow(10, d.regressionPlc - standardDeviationPlc)))
 
     //===========================================================================
 
@@ -127,9 +133,7 @@ class ExtrapolationChart {
       .attr('text-anchor', 'end')
       .text('Price ($)')
 
-    // Append a clip path for the chart area, so lines don't overflow.
-    // Only really used for bottom clipping since top and right edges
-    // extend to the edge bleed.
+    // Append the clip path
     g.append('clipPath')
       .attr('id', 'extrapolation_chart_clip')
       .append('rect')
@@ -139,10 +143,9 @@ class ExtrapolationChart {
       .attr('height', innerHeight + margin.top)
 
     // Append the price line
-    const priceLinePath = g.append('path')
+    const pricePath = g.append('path')
       .datum(data)
       .attr('class', 'path-line path-price')
-      .attr('clip-path', "url(#extrapolation_chart_clip)")
       .attr('d', priceLine)
 
     // Append the regression line
@@ -150,26 +153,22 @@ class ExtrapolationChart {
       .datum(regressionData)
       .attr('class', 'path-line path-regression')
       .attr('clip-path', "url(#extrapolation_chart_clip)")
-      .attr('d', extrapolationLine)
+      .attr('d', regressionLine)
 
-    // Top variation
-    const topDeviationPath = g.append('path')
+    // Append regression through 3 peak prices
+    const regressionLineTopPath = g.append('path')
       .datum(regressionData)
       .attr('class', 'path-line path-regression-std-dev')
       .attr('clip-path', "url(#extrapolation_chart_clip)")
-      .attr('d', extrapolationLineTop)
+      .attr('d', regressionLineTop)
 
-    // Bottom variation
+    // Append regression standard deviation bottom
     const bottomDeviationPath = g.append('path')
       .datum(regressionData)
       .attr('class', 'path-line path-regression-std-dev')
       .attr('clip-path', "url(#extrapolation_chart_clip)")
-      .attr('d', extrapolationLineBottom)
+      .attr('d', regressionLineBottom)
 
-    // Re-call and re-attr the axes and line paths.
-    // Possible to do this way thanks to closures; 'g', 'pricePath', etc.,
-    // are still available in this function even if it's called outside this
-    // context.
     this.rescale = () => {
       this.setScale()
 
@@ -185,17 +184,17 @@ class ExtrapolationChart {
       g.select('.y.axis')
         .call(yAxisCall)
 
-      priceLinePath
+      pricePath
         .attr('d', priceLine)
 
       regressionLinePath
-        .attr('d', extrapolationLine)
+        .attr('d', regressionLine)
 
-      topDeviationPath
-        .attr('d', extrapolationLineTop)
+      regressionLineTopPath
+        .attr('d', regressionLineTop)
 
       bottomDeviationPath
-        .attr('d', extrapolationLineBottom)
+        .attr('d', regressionLineBottom)
     }
 
     // Append verticle line - must be appended to a group, not rect
@@ -216,7 +215,7 @@ class ExtrapolationChart {
       .attr('class', 'mouse-circle mouse-circle-regression')
       .attr('visibility', 'hidden')
 
-    const mouseCircleRegressionMax = g.append('circle')
+    const mouseCircleRegressionTop = g.append('circle')
       .attr('class', 'mouse-circle mouse-circle-deviation')
       .attr('visibility', 'hidden')
 
@@ -241,14 +240,12 @@ class ExtrapolationChart {
     function mouseOver() {
       g.select('.mouse-line').style('visibility', 'visible')
       g.selectAll('.mouse-circle').style('visibility', 'visible')
-      // document.querySelector('#extrapolation_chart_data').style.visibility = 'visible'
       updateAllStyles('#extrapolation .chart-data', 'visibility', 'visible')
     }
 
     function mouseOut() {
       g.select('.mouse-line').style('visibility', 'hidden')
       g.selectAll('.mouse-circle').style('visibility', 'hidden')
-      // document.querySelector('#extrapolation_chart_data').style.visibility = 'hidden'
       updateAllStyles('#extrapolation .chart-data', 'visibility', 'hidden')
     }
 
@@ -263,8 +260,6 @@ class ExtrapolationChart {
         return
       }
 
-      // Using regressionData instead of data and doing this check here lets
-      // us make the regression lines overflow to the bleeding edge of the chart
       if (item.price) {
         const yPosPrice = yScale(item.price)
         g.select('.mouse-circle-price')
@@ -277,21 +272,21 @@ class ExtrapolationChart {
         updateAllText('#extrapolation .price', '???')
       }
 
-      const regressionPrice = Math.pow(10, item.regressionNlb)
-      const regressionPriceMax = Math.pow(10, item.regressionNlb + standardDeviationNlb)
-      const regressionPriceMin = Math.pow(10, item.regressionNlb - standardDeviationNlb)
+      const regressionPrice = Math.pow(10, item.regressionPlc)
+      const regressionPriceTop = Math.pow(10, item.regressionPlcTop)
+      const regressionPriceMin = Math.pow(10, item.regressionPlc - standardDeviationPlc)
 
       const yPosRegression = yScale(regressionPrice)
-      const yPosRegressionMax = yScale(regressionPriceMax)
+      const yPosRegressionTop = yScale(regressionPriceTop)
       const yPosRegressionMin = yScale(regressionPriceMin)
 
       mouseLine.attr('transform', `translate(${xPos},0)`)
       mouseCircleRegression.attr('transform', `translate(${xPos},${yPosRegression})`)
-      mouseCircleRegressionMax.attr('transform', `translate(${xPos},${yPosRegressionMax})`)
+      mouseCircleRegressionTop.attr('transform', `translate(${xPos},${yPosRegressionTop})`)
       mouseCircleRegressionMin.attr('transform', `translate(${xPos},${yPosRegressionMin})`)
 
       updateAllText('#extrapolation .expected', moneyFormat(regressionPrice))
-      updateAllText('#extrapolation .d-max', moneyFormat(regressionPriceMax))
+      updateAllText('#extrapolation .d-max', moneyFormat(regressionPriceTop))
       updateAllText('#extrapolation .d-min', moneyFormat(regressionPriceMin))
       updateAllText('#extrapolation .date', moment(item.date).format('MMM D, YYYY'))
     }
@@ -316,11 +311,9 @@ class ExtrapolationChart {
   rangeChange(e) {
     const maxDays = this.mapInputRangeToDays(e.target.value)
 
-    // Determine the max price for the scale in a way that keeps its x,y
-    // position the same for the last x point on the chart.
     const { regressionData } = this.chartData
-    const maxDayRegressionNlb = Math.pow(10, regressionData[maxDays].regressionNlb)
-    const maxPrice = maxDayRegressionNlb * this.priceToRegressionRatio
+    const maxRegressionPlc = Math.pow(10, regressionData[maxDays].regressionPlc)
+    const maxPrice = maxRegressionPlc * this.priceToRegressionRatio
 
     this.maxDays = maxDays
     this.maxPrice = maxPrice
