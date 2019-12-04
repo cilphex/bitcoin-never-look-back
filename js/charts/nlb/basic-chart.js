@@ -1,6 +1,6 @@
-import d3 from './external/d3.js'
-import moment from './external/moment.js'
-import { moneyFormat, updateAllText, updateAllStyles } from './util.js'
+import d3 from '/js/external/d3.js'
+import moment from '/js/external/moment.js'
+import { moneyFormat, updateAllText, updateAllStyles } from '/js/util.js'
 
 class BasicChart {
   constructor(chartData) {
