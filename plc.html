@@ -40,8 +40,39 @@
       <div id="basic">
         <div class="chart-header">
           <h2>Power Law Corridor</h2>
+          <div class="chart-data chart-data-top">
+            <div class="date"></div>
+            <div>
+              Price: <span class="price"></span>
+              Max: <span class="deviation d-max"></span>
+              Expected: <span class="expected"></span>
+              Min: <span class="deviation d-min"></span>
+            </div>
+          </div>
         </div>
         <div class="chart-wrapper">
+          <table class="chart-data chart-data-overlay">
+            <tr>
+              <td>Date</td>
+              <td class="date"></td>
+            </tr>
+            <tr>
+              <td>Price</td>
+              <td class="price"></td>
+            </tr>
+            <tr>
+              <td>Max</td>
+              <td class="deviation d-max"></td>
+            </tr>
+            <tr>
+              <td>Expected</td>
+              <td class="expected"></td>
+            </tr>
+            <tr>
+              <td>Min</td>
+              <td class="deviation d-min"></td>
+            </tr>
+          </table>
           <div id="basic_chart" class="chart">
             <div class="chart-loading">
               <div>Loading&hellip;</div>

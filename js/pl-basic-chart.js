@@ -38,12 +38,20 @@ class BasicChart {
     var g = svg.append('g')
       .attr('transform', `translate(${margin.left}, ${margin.top})`)
 
+    //===========================================================================
+
     // Create scales
     var xScale = d3.scaleSqrt().rangeRound([0, innerWidth])
     var yScale = d3.scaleLog().rangeRound([innerHeight, 0])
 
-    xScale.domain(d3.extent(data, (d) => d.index + 1))
-    yScale.domain(d3.extent(data, (d) => d.price))
+    this.setScale = (maxDays, maxRegressionPlc) => {
+      xScale.domain(d3.extent(data, (d) => d.index + 1))
+      yScale.domain(d3.extent(data, (d) => d.price))
+    }
+
+    this.setScale(null, null)
+
+    //===========================================================================
 
     // Create price line
     var priceLine = d3.line()
@@ -65,6 +73,8 @@ class BasicChart {
       .x(d => xScale(d.index + 1))
       .y(d => yScale(Math.pow(10, d.regressionPlc - standardDeviationPlc)))
 
+    //===========================================================================
+
     // A tick for Jan 1. on each year
     const xTickVals = regressionData
       .filter(i => i.date.getMonth() == 0 && i.date.getDate() == 1)
@@ -74,45 +84,45 @@ class BasicChart {
     // From 0.1 to 10,000,000.
     const yTickValues = Array(9).fill(null).map((val, i) => Math.pow(10, i-1))
 
+    const xGridCall = d3.axisBottom(xScale)
+      .tickValues(xTickVals)
+      .tickSize(-innerHeight)
+      .tickFormat('')
+
+    const yGridCall = d3.axisLeft(yScale)
+      .tickValues(yTickValues)
+      .tickSize(-innerWidth)
+      .tickFormat('')
+
+    const xAxisCall = d3.axisBottom(xScale)
+      .tickValues(xTickVals)
+      .tickFormat((i) =>
+        moment(data[0].date).add(i, 'days').format('`YY')
+      )
+
+    const yAxisCall = d3.axisLeft(yScale)
+      .tickValues(yTickValues)
+      .tickFormat(d3.format(",.1f"))
+
     // X gridlines - Draw gridlines first to put beneath axis
     g.append('g')
       .attr('transform', `translate(0, ${innerHeight})`)
       .attr('class', 'grid')
-      .call(
-        d3.axisBottom(xScale)
-          .tickValues(xTickVals)
-          .tickSize(-innerHeight)
-          .tickFormat('')
-      )
+      .call(xGridCall)
 
     // Y gridlines
     g.append('g')
       .attr('class', 'grid')
-      .call(
-        d3.axisLeft(yScale)
-          .tickValues(yTickValues)
-          .tickSize(-innerWidth)
-          .tickFormat('')
-      )
+      .call(yGridCall)
 
     // Bottom axis - Date
     g.append('g')
       .attr('transform', `translate(0, ${innerHeight})`)
-      .call(
-        d3.axisBottom(xScale)
-          .tickValues(xTickVals)
-          .tickFormat((i) =>
-            moment(data[0].date).add(i, 'days').format('`YY')
-          )
-      )
+      .call(xAxisCall)
 
     // Left axis - Price
     g.append('g')
-      .call(
-        d3.axisLeft(yScale)
-          .tickValues(yTickValues)
-          .tickFormat(d3.format(",.1f"))
-      )
+      .call(yAxisCall)
       .append('text')
       .attr('class', 'axis-text')
       .attr('transform', 'rotate(-90)')
@@ -131,31 +141,152 @@ class BasicChart {
       .attr('height', innerHeight + margin.top)
 
     // Append the price line
-    g.append('path')
+    const pricePath = g.append('path')
       .datum(data)
       .attr('class', 'path-line path-price')
       .attr('d', priceLine)
 
     // Append the regression line
-    g.append('path')
+    const regressionLinePath = g.append('path')
       .datum(regressionData)
       .attr('class', 'path-line path-regression')
       .attr('clip-path', "url(#basic_chart_clip)")
       .attr('d', regressionLine)
 
     // Append regression through 3 peak prices
-    g.append('path')
+    const regressionLineTopPath = g.append('path')
       .datum(regressionData)
       .attr('class', 'path-line path-regression-std-dev')
       .attr('clip-path', "url(#basic_chart_clip)")
       .attr('d', regressionLineTop)
 
     // Append regression standard deviation bottom
-    g.append('path')
+    const bottomDeviationPath = g.append('path')
       .datum(regressionData)
       .attr('class', 'path-line path-regression-std-dev')
       .attr('clip-path', "url(#basic_chart_clip)")
       .attr('d', regressionLineBottom)
+
+    this.rescale = () => {
+      this.setScale()
+
+      g.select('.x.grid')
+        .call(xGridCall)
+
+      g.select('.y.grid')
+        .call(yGridCall)
+
+      g.select('.x.axis')
+        .call(xAxisCall)
+
+      g.select('.y.axis')
+        .call(yAxisCall)
+
+      pricePath
+        .attr('d', priceLine)
+
+      regressionLinePath
+        .attr('d', regressionLine)
+
+      regressionLineTopPath
+        .attr('d', regressionLineTop)
+
+      bottomDeviationPath
+        .attr('d', regressionLineBottom)
+    }
+
+    // Append verticle line - must be appended to a group, not rect
+    const mouseLine = g.append('line')
+      .attr('class', 'mouse-line')
+      .attr('x1', 0)
+      .attr('y1', 0)
+      .attr('x2', 0)
+      .attr('y2', innerHeight)
+      .attr('visibility', 'hidden')
+
+    // Circles - must be appended to a group, not rect
+    const mouseCirclePrice = g.append('circle')
+      .attr('class', 'mouse-circle mouse-circle-price')
+      .attr('visibility', 'hidden')
+
+    const mouseCircleRegression = g.append('circle')
+      .attr('class', 'mouse-circle mouse-circle-regression')
+      .attr('visibility', 'hidden')
+
+    const mouseCircleRegressionTop = g.append('circle')
+      .attr('class', 'mouse-circle mouse-circle-deviation')
+      .attr('visibility', 'hidden')
+
+    const mouseCircleRegressionMin = g.append('circle')
+      .attr('class', 'mouse-circle mouse-circle-deviation')
+      .attr('visibility', 'hidden')
+
+    // Rect to catch mouse movements
+    const mouseArea = g.append('rect')
+      .attr('class', 'mouse-overlay')
+      .attr('width', innerWidth + margin.right)
+      .attr('height', innerHeight)
+      .on('mouseover', mouseOver)
+      .on('mouseout', mouseOut)
+      .on('mousemove', mouseMove)
+      .on('touchstart', mouseOver)
+      .on('touchend', mouseOut)
+      .on('touchmove', mouseMove)
+
+    const bisectSqrtDaysPassed = d3.bisector((d) => d.sqrtDaysPassed).right
+
+    function mouseOver() {
+      g.select('.mouse-line').style('visibility', 'visible')
+      g.selectAll('.mouse-circle').style('visibility', 'visible')
+      updateAllStyles('#basic .chart-data', 'visibility', 'visible')
+    }
+
+    function mouseOut() {
+      g.select('.mouse-line').style('visibility', 'hidden')
+      g.selectAll('.mouse-circle').style('visibility', 'hidden')
+      updateAllStyles('#basic .chart-data', 'visibility', 'hidden')
+    }
+
+    function mouseMove() {
+      const mouse = d3.mouse(this)
+      const index = Math.round(xScale.invert(mouse[0]))
+      const item = regressionData[index]
+      const xPos = xScale(index)
+
+      if (!item) {
+        return
+      }
+
+      if (item.price) {
+        const yPosPrice = yScale(item.price)
+        g.select('.mouse-circle-price')
+          .style('visibility', 'visible')
+          .attr('transform', `translate(${xPos},${yPosPrice})`)
+        updateAllText('#basic .price', moneyFormat(item.price))
+      }
+      else {
+        g.select('.mouse-circle-price').style('visibility', 'hidden')
+        updateAllText('#basic .price', '???')
+      }
+
+      const regressionPrice = Math.pow(10, item.regressionPlc)
+      const regressionPriceTop = Math.pow(10, item.regressionPlcTop)
+      const regressionPriceMin = Math.pow(10, item.regressionPlc - standardDeviationPlc)
+
+      const yPosRegression = yScale(regressionPrice)
+      const yPosRegressionTop = yScale(regressionPriceTop)
+      const yPosRegressionMin = yScale(regressionPriceMin)
+
+      mouseLine.attr('transform', `translate(${xPos},0)`)
+      mouseCircleRegression.attr('transform', `translate(${xPos},${yPosRegression})`)
+      mouseCircleRegressionTop.attr('transform', `translate(${xPos},${yPosRegressionTop})`)
+      mouseCircleRegressionMin.attr('transform', `translate(${xPos},${yPosRegressionMin})`)
+
+      updateAllText('#basic .expected', moneyFormat(regressionPrice))
+      updateAllText('#basic .d-max', moneyFormat(regressionPriceTop))
+      updateAllText('#basic .d-min', moneyFormat(regressionPriceMin))
+      updateAllText('#basic .date', moment(item.date).format('MMM D, YYYY'))
+    }
   }
 }
 

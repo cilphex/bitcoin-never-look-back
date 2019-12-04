@@ -58,6 +58,8 @@ class RegressionChart {
 
     this.setScale(null, null)
 
+    //===========================================================================
+
     // Create forward minimum line
     const forwardMinLine = d3.line()
       .x(d => xScale(d.index))
@@ -252,7 +254,6 @@ class RegressionChart {
       .on('touchstart', mouseOver)
       .on('touchend', mouseOut)
       .on('touchmove', mouseMove)
-
 
     const bisectSqrtDaysPassed = d3.bisector((d) => d.sqrtDaysPassed).right
 
