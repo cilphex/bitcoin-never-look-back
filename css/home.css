@@ -1,0 +1,19 @@
+div.links {
+}
+
+div.links a,
+div.links a:visited {
+  display: flex;
+  align-items: center;
+  height: 60px;
+  text-decoration: none;
+  border-bottom: 1px solid #ccc;
+}
+
+div.links a:hover,
+div.links a:active {
+}
+
+div.links a:last-child {
+  border-bottom: none;
+}

@@ -1,0 +1,265 @@
+<html>
+  <head>
+    <title>Bitcoin - Never Look Back Price (NLB) Charts</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="images/chart-icon.png" />
+    <link rel="stylesheet" type="text/css" href="css/index.css"/>
+    <link rel="stylesheet" type="text/css" href="css/responsive.css"/>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-152601513-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-152601513-2');
+    </script>
+  </head>
+  <body>
+    <div class="nav-wrap">
+      <div class="nav">
+        <a class="home" href="/">
+          <span></span>
+          <span></span>
+          <span></span>
+        </a>
+        <a class="selected" href="/nlb.html">NLB</a>
+        <a href="/plc.html">PLC</a>
+        <!-- <a href="/stock-to-flow.html">Stock to Flow</a> -->
+      </div>
+    </div>
+    <div class="content">
+      <h1>Bitcoin's Never Look Back Price</h1>
+      <p class="intro">
+        As described in
+        <!-- <a href="https://medium.com/@cane.island/why-bitcoin-is-never-looking-back-f06ab333742e">this Medium article</a> -->
+        <a href="https://www.caneislandcrypto.com/blog/2019/10/5/why-bitcoin-is-never-looking-back">this article</a>
+        by
+        <a href="https://twitter.com/nsquaredcrypto">Timothy Peterson</a>
+      </p>
+
+      <div id="basic">
+        <div class="chart-header">
+          <h2>Basic NLB</h2>
+          <div class="chart-data chart-data-top">
+            <div class="date"></div>
+            <div>
+              Price: <span class="price"></span></span>
+              NLB: <span class="forward-minimum"></span></span>
+            </div>
+          </div>
+        </div>
+        <div class="description">
+          <div class="quote">&ldquo;</div>
+          <div class="inner">
+            <p>
+              Bitcoin has a relatively unnoticed and &mdash; for most &mdash; unknown
+              characteristic. I call it the &ldquo;Never Look Back Price.&rdquo; The NLB price is
+              the last time bitcoin was at a particular price level. Once it reached
+              that price, it only proceeded up, it never retraced to that value
+              again.
+            </p>
+          </div>
+        </div>
+        <div class="chart-wrapper">
+          <table class="chart-data chart-data-overlay">
+            <tr>
+              <td>Date</td>
+              <td class="date"></td>
+            </tr>
+            <tr>
+              <td>Price</td>
+              <td class="price"></td>
+            </tr>
+            <tr>
+              <td>NLB</td>
+              <td class="forward-minimum"></td>
+            </tr>
+          </table>
+          <div id="basic_chart" class="chart">
+            <div class="chart-loading">
+              <div>Loading&hellip;</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="regression">
+        <div class="chart-header">
+          <h2>Regression</h2>
+          <div class="chart-data chart-data-top">
+            <div class="date"></div>
+            <div>
+              NLB: <span class="forward-minimum"></span>
+              Max: <span class="deviation d-max"></span>
+              Expected: <span class="expected"></span>
+              Min: <span class="deviation d-min"></span>
+            </div>
+          </div>
+        </div>
+        <div class="description">
+          <div class="quote">&ldquo;</div>
+          <div class="inner">
+            <p>
+              I have plotted these NLB prices on a lognormal scale over
+              time. The result was amazing. The horizontal scale is &ldquo;square root
+              time&rdquo;, which is just regular time plotted on a different scale. It
+              essentially equates traditional time-value of money concepts to
+              bitcoin's adoption rate, and therefore price.
+            </p>
+          </div>
+        </div>
+        <div class="chart-wrapper">
+          <table class="chart-data chart-data-overlay">
+            <tr>
+              <td>Date</td>
+              <td class="date"></td>
+            </tr>
+            <tr>
+              <td>NLB</td>
+              <td class="forward-minimum"></td>
+            </tr>
+            <tr>
+              <td>Max</td>
+              <td class="deviation d-max"></td>
+            </tr>
+            <tr>
+              <td>Expected</td>
+              <td class="expected"></td>
+            </tr>
+            <tr>
+              <td>Min</td>
+              <td class="deviation d-min"></td>
+            </tr>
+          </table>
+          <div id="regression_chart" class="chart">
+            <div class="chart-loading">
+              <div>Loading&hellip;</div>
+            </div>
+          </div>
+        </div>
+        <div class="slider-container">
+          <input type="range" id="regression_chart_range" class="chart-range" min="0" max="150" value="100">
+        </div>
+      </div>
+
+      <div id="extrapolation">
+        <div class="chart-header">
+          <h2>Extrapolation</h2>
+          <div class="chart-data chart-data-top">
+            <div class="date"></div>
+            <div>
+              Price: <span class="price"></span>
+              Max: <span class="deviation d-max"></span>
+              Expected: <span class="expected"></span>
+              Min: <span class="deviation d-min"></span>
+            </div>
+          </div>
+        </div>
+        <div class="description">
+          <div class="quote">&ldquo;</div>
+          <div class="inner">
+            <p>
+              The NLB price represents a floor value for bitcoin. The actual
+              price could be higher, but significantly higher prices will fall
+              back down to the floor value. The NLB price is a sustainable price
+              over the long term.
+            </p>
+          </div>
+        </div>
+        <div class="chart-wrapper">
+          <table class="chart-data chart-data-overlay">
+            <tr>
+              <td>Date</td>
+              <td class="date"></td>
+            </tr>
+            <tr>
+              <td>Price</td>
+              <td class="price"></td>
+            </tr>
+            <tr>
+              <td>Max</td>
+              <td class="deviation d-max"></td>
+            </tr>
+            <tr>
+              <td>Expected</td>
+              <td class="expected"></td>
+            </tr>
+            <tr>
+              <td>Min</td>
+              <td class="deviation d-min"></td>
+            </tr>
+          </table>
+          <div id="extrapolation_chart" class="chart">
+            <div class="chart-loading">
+              <div>Loading&hellip;</div>
+            </div>
+          </div>
+        </div>
+        <div class="slider-container">
+          <input type="range" id="extrapolation_chart_range" class="chart-range" min="0" max="150" value="100">
+        </div>
+      </div>
+
+      <h2>Data Points</h2>
+      <div class="description">
+        <div class="quote">&ldquo;</div>
+        <div class="inner">
+          <p>
+            Is this NLB price a trend that will continue? Like I mentioned
+            before, we don't know what the next lowest price is until we hit
+            that price. There will undoubtedly be skeptics who criticize this
+            methodology, and healthy professional skepticism is beneficial
+            because it keeps expectations realistic. On the other hand, would
+            you bet money that the price will fall substantially, say, to
+            $4,000, given the ten-year history of the Never Look Back price? I
+            think that might take some guts, to say the least.
+          </p>
+        </div>
+      </div>
+      <div class="data-points">
+        <div>
+          <h3>Today</h3>
+          <table>
+            <tr class="deviation">
+              <td>Max price</td>
+              <td id="today_max"></td>
+            </tr>
+            <tr class="expected">
+              <td>Expected price</td>
+              <td id="today_expected"></td>
+            </tr>
+            <tr class="deviation">
+              <td>Min price</td>
+              <td id="today_min"></td>
+            </tr>
+          </table>
+        </div>
+        <div>
+          <h3>5 Years</h3>
+          <table id="year_data_points"></table>
+        </div>
+        <div>
+          <h3>Goals</h3>
+          <table id="magnitude_data_points"></table>
+        </div>
+      </div>
+
+      <p class="last-line">
+        &ldquo;Bitcoin's Never Look Back price is a picture of bitcoin adoption.&rdquo;
+      </p>
+      <a class="original-article" href="https://www.caneislandcrypto.com/blog/2019/10/5/why-bitcoin-is-never-looking-back">
+        Original Article by Timothy Peterson
+      </a>
+
+      <div class="footer">
+        <p class="true-til-not">
+          It's true until it's not.
+          <span class="take-a-while">But that might take a while.</span>
+        </p>
+        <p><a href="https://github.com/cilphex/bitcoin-never-look-back">Open source</a></p>
+      </div>
+    </div>
+  </body>
+
+  <script type="module" src="js/charts/nlb/index.js"></script>
+</html>

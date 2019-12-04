@@ -1,6 +1,6 @@
-import d3 from './external/d3.js'
-import moment from './external/moment.js'
-import { moneyFormat, updateAllText, updateAllStyles } from './util.js'
+import d3 from '/js/external/d3.js'
+import moment from '/js/external/moment.js'
+import { moneyFormat, updateAllText, updateAllStyles } from '/js/util.js'
 
 class RegressionChart {
   constructor(chartData) {
@@ -16,7 +16,7 @@ class RegressionChart {
     const {
       data,
       regressionData,
-      standardDeviation
+      standardDeviationNlb
     } = this.chartData
 
     // Vars for dimensions
@@ -51,12 +51,14 @@ class RegressionChart {
     const xScale = d3.scaleSqrt().rangeRound([0, innerWidth])
     const yScale = d3.scaleLog().rangeRound([innerHeight, 0])
 
-    this.setScale = (maxDays, maxRegressionNlb) => {
+    this.setScale = () => {
       xScale.domain([0, this.maxDays])
       yScale.domain([d3.min(data, (d) => d.forwardMinimumPrice), Math.pow(10, this.maxRegressionNlb)])
     }
 
-    this.setScale(null, null)
+    this.setScale()
+
+    //===========================================================================
 
     // Create forward minimum line
     const forwardMinLine = d3.line()
@@ -71,12 +73,12 @@ class RegressionChart {
     // Standard deviation line - top
     const regressionLineTop = d3.line()
       .x(d => xScale(d.index))
-      .y(d => yScale(Math.pow(10, d.regressionNlb + standardDeviation)))
+      .y(d => yScale(Math.pow(10, d.regressionNlb + standardDeviationNlb)))
 
     // Standard deviation line - bottom
     const regressionLineBottom = d3.line()
       .x(d => xScale(d.index))
-      .y(d => yScale(Math.pow(10, d.regressionNlb - standardDeviation)))
+      .y(d => yScale(Math.pow(10, d.regressionNlb - standardDeviationNlb)))
 
     //=======================================================
 
@@ -253,7 +255,6 @@ class RegressionChart {
       .on('touchend', mouseOut)
       .on('touchmove', mouseMove)
 
-
     const bisectSqrtDaysPassed = d3.bisector((d) => d.sqrtDaysPassed).right
 
     function mouseOver() {
@@ -291,8 +292,8 @@ class RegressionChart {
       }
 
       const regressionPrice = Math.pow(10, item.regressionNlb)
-      const regressionPriceMax = Math.pow(10, item.regressionNlb + standardDeviation)
-      const regressionPriceMin = Math.pow(10, item.regressionNlb - standardDeviation)
+      const regressionPriceMax = Math.pow(10, item.regressionNlb + standardDeviationNlb)
+      const regressionPriceMin = Math.pow(10, item.regressionNlb - standardDeviationNlb)
 
       const yPosRegression = yScale(regressionPrice)
       const yPosRegressionMax = yScale(regressionPriceMax)
