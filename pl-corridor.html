@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>Bitcoin Charts</title>
+    <title>Bitcoin - Power Law Corridor Charts</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="images/chart-icon.png" />
     <link rel="stylesheet" type="text/css" href="css/index.css"/>
@@ -18,23 +18,39 @@
   <body>
     <div class="nav-wrap">
       <div class="nav">
-        <a class="home selected" href="/">
+        <a class="home" href="/">
           <span></span>
           <span></span>
           <span></span>
         </a>
         <a href="/nlb.html">NLB</a>
-        <a href="/pl-corridor.html">PL Corridor</a>
+        <a class="selected" href="/pl-corridor.html">PL Corridor</a>
         <a href="/stock-to-flow.html">Stock to Flow</a>
       </div>
     </div>
     <div class="content">
-      <h1>Bitcoin Charts</h1>
-      <div class="links">
-        <a href="/nlb.html">Never Look Back Price</a>
-        <a href="/pl-corridor.html">Power Law Corridor</a>
-        <a href="/stock-to-flow.html">Stock to Flow</a>
+      <h1>Bitcoin's Power Law Corridor of Growth</h1>
+      <p class="intro">
+        As described in
+        <a href="https://medium.com/coinmonks/bitcoins-natural-long-term-power-law-corridor-of-growth-649d0e9b3c94">this article</a>
+        by
+        <a href="https://twitter.com/hcburger1">Harold Christopher Burger</a>
+      </p>
+
+      <div id="basic">
+        <div class="chart-header">
+          <h2>Log-Log</h2>
+        </div>
+        <div class="chart-wrapper">
+          <div id="basic_chart" class="chart">
+            <div class="chart-loading">
+              <div>Loading&hellip;</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </body>
+
+  <script type="module" src="js/pl-index.js"></script>
 </html>

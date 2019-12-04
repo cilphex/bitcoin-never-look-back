@@ -17,6 +17,47 @@ p {
   margin: 10px 0;
 }
 
+div.nav-wrap {
+  border-bottom: 1px solid #ccc;
+}
+
+div.nav {
+  display: flex;
+  max-width: 800px;
+  margin: 0 auto -1px;
+}
+
+div.nav a,
+div.nav a:visited {
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  height: 60px;
+  text-decoration: none;
+  border-bottom: 1px solid #ccc;
+  outline: none;
+}
+
+div.nav a:hover,
+div.nav a:active {
+  background: #fafafa;
+}
+
+div.nav a.home {
+
+}
+
+div.nav a.home span {
+  margin: 0 1px 0 0;
+  width: 5px;
+  height: 15px;
+  background: #000;
+}
+
+div.nav a.selected {
+  border-bottom: 1px solid #000;
+}
+
 div.content {
   margin: 0 auto;
   padding: 20px;
