@@ -3,7 +3,7 @@ import ChartData from './chart-data.js'
 import BasicChart from './nlb-basic-chart.js'
 import RegressionChart from './nlb-regression-chart.js'
 import ExtrapolationChart from './nlb-extrapolation-chart.js'
-import DataPointManager from './data-point-manager.js'
+import DataPointManager from './nlb-data-point-manager.js'
 
 const chartData = new ChartData(rawData)
 

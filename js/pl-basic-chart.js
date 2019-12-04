@@ -8,6 +8,7 @@ class BasicChart {
     this.chartData = chartData
 
     this.drawChart()
+    this.setupRangeListener()
   }
 
   drawChart() {
@@ -38,18 +39,24 @@ class BasicChart {
     var g = svg.append('g')
       .attr('transform', `translate(${margin.left}, ${margin.top})`)
 
+    // Set initial max vals for chart
+    this.maxDays = data.length - 1
+    this.maxRegressionPlc = regressionData[data.length-1].regressionPlc
+
     //===========================================================================
 
     // Create scales
     var xScale = d3.scaleSqrt().rangeRound([0, innerWidth])
     var yScale = d3.scaleLog().rangeRound([innerHeight, 0])
 
-    this.setScale = (maxDays, maxRegressionPlc) => {
-      xScale.domain(d3.extent(data, (d) => d.index + 1))
-      yScale.domain(d3.extent(data, (d) => d.price))
+    this.setScale = () => {
+      // xScale.domain(d3.extent(data, (d) => d.index + 1))
+      // yScale.domain(d3.extent(data, (d) => d.price))
+      xScale.domain([0, this.maxDays])
+      yScale.domain([d3.min(data, (d) => d.price), Math.pow(10, this.maxRegressionPlc)])
     }
 
-    this.setScale(null, null)
+    this.setScale()
 
     //===========================================================================
 
@@ -107,21 +114,23 @@ class BasicChart {
     // X gridlines - Draw gridlines first to put beneath axis
     g.append('g')
       .attr('transform', `translate(0, ${innerHeight})`)
-      .attr('class', 'grid')
+      .attr('class', 'x grid')
       .call(xGridCall)
 
     // Y gridlines
     g.append('g')
-      .attr('class', 'grid')
+      .attr('class', 'y grid')
       .call(yGridCall)
 
     // Bottom axis - Date
     g.append('g')
+      .attr('class', 'x axis')
       .attr('transform', `translate(0, ${innerHeight})`)
       .call(xAxisCall)
 
     // Left axis - Price
     g.append('g')
+      .attr('class', 'y axis')
       .call(yAxisCall)
       .append('text')
       .attr('class', 'axis-text')
@@ -287,6 +296,34 @@ class BasicChart {
       updateAllText('#basic .d-min', moneyFormat(regressionPriceMin))
       updateAllText('#basic .date', moment(item.date).format('MMM D, YYYY'))
     }
+  }
+
+  setupRangeListener() {
+    document.querySelector('#basic_chart_range')
+      .addEventListener('input', this.rangeChange.bind(this))
+  }
+
+  mapInputRangeToDays(inputRangeValue) {
+    inputRangeValue = 100 - inputRangeValue
+    const min = this.chartData.data.length
+    const max = 10000 - 1 // Constants.regressionData.maxDays
+    const rangeDiff = max - min
+    const percent = inputRangeValue / 100
+    const offset = rangeDiff * percent
+    const pos = min + offset
+    return Math.round(pos)
+  }
+
+  rangeChange(e) {
+    const maxDays = this.mapInputRangeToDays(e.target.value)
+
+    const { data, regressionData } = this.chartData
+    const maxRegressionPlc = regressionData[maxDays].regressionPlc
+
+    this.maxDays = maxDays
+    this.maxRegressionPlc = maxRegressionPlc
+
+    this.rescale()
   }
 }
 

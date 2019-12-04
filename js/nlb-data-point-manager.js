@@ -16,7 +16,7 @@ class DataPointManager {
   }
 
   fillToday() {
-    const { regressionData, standardDeviation } = this.chartData
+    const { regressionData, standardDeviationNlb } = this.chartData
 
     const todayData = regressionData.find(i =>
       moment(i.date).isSame(moment(), 'day')
@@ -25,8 +25,8 @@ class DataPointManager {
     const { regressionNlb } = todayData
 
     const todayExpected = Math.round(Math.pow(10, regressionNlb))
-    const todayMin = Math.round(Math.pow(10, regressionNlb - standardDeviation))
-    const todayMax = Math.round(Math.pow(10, regressionNlb + standardDeviation))
+    const todayMin = Math.round(Math.pow(10, regressionNlb - standardDeviationNlb))
+    const todayMax = Math.round(Math.pow(10, regressionNlb + standardDeviationNlb))
 
     const vals = {
       '#today_expected': todayExpected,

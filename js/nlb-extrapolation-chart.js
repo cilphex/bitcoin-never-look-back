@@ -63,7 +63,7 @@ class ExtrapolationChart {
       yScale.domain([0, this.maxPrice])
     }
 
-    this.setScale(null, null)
+    this.setScale()
 
     // Create price line
     const priceLine = d3.line()
@@ -233,7 +233,6 @@ class ExtrapolationChart {
       .on('touchstart', mouseOver)
       .on('touchend', mouseOut)
       .on('touchmove', mouseMove)
-
 
     const bisectDate = d3.bisector((d) => d.date).right
 

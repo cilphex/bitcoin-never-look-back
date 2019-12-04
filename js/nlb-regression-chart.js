@@ -51,12 +51,12 @@ class RegressionChart {
     const xScale = d3.scaleSqrt().rangeRound([0, innerWidth])
     const yScale = d3.scaleLog().rangeRound([innerHeight, 0])
 
-    this.setScale = (maxDays, maxRegressionNlb) => {
+    this.setScale = () => {
       xScale.domain([0, this.maxDays])
       yScale.domain([d3.min(data, (d) => d.forwardMinimumPrice), Math.pow(10, this.maxRegressionNlb)])
     }
 
-    this.setScale(null, null)
+    this.setScale()
 
     //===========================================================================
 
