@@ -133,9 +133,10 @@ div.credits p.last-line {
 
 div.credits a.original-article {
   display: block;
-  padding: 20px;
+  padding: 20px 30px;
   text-align: center;
   text-decoration: none;
+  line-height: 1.5em;
   border: 1px solid #555;
   border-radius: 5px;
   outline: none;
