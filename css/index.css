@@ -116,19 +116,24 @@ div.description div.quote {
   opacity: 0.25;
 }
 
-p.last-line {
-  margin: 60px 30px 20px;
+div.credits {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 60px 30px;
+}
+
+div.credits p.last-line {
+  margin-bottom: 20px;
   font-size: 18px;
   font-weight: bold;
   line-height: 1.7em;
   text-align: center;
 }
 
-a.original-article {
+div.credits a.original-article {
   display: block;
-  margin: 20px auto 60px;
   padding: 20px;
-  width: 270px;
   text-align: center;
   text-decoration: none;
   border: 1px solid #555;
