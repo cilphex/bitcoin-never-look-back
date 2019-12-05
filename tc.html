@@ -1,0 +1,99 @@
+<html>
+  <head>
+    <title>Bitcoin - Top Countdown (TC) Chart</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="images/chart-icon.png" />
+    <link rel="stylesheet" type="text/css" href="css/index.css"/>
+    <link rel="stylesheet" type="text/css" href="css/responsive.css"/>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-152601513-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-152601513-2');
+    </script>
+  </head>
+  <body>
+    <div class="nav-wrap">
+      <div class="nav">
+        <a class="home" href="/">
+          <span></span>
+          <span></span>
+          <span></span>
+        </a>
+        <a href="/nlb.html">NLB</a>
+        <a href="/plc.html">PLC</a>
+        <a class="selected" href="/tc.html">TC</a>
+        <!-- <a href="/stock-to-flow.html">Stock to Flow</a> -->
+      </div>
+    </div>
+    <div class="content">
+      <h1>Bitcoin's Top Countdown</h1>
+      <p class="intro">
+        A simple number.
+      </p>
+
+      <div class="text-block">
+        <p>Lorem ipsum</p>
+      </div>
+
+      <div id="basic">
+        <div class="chart-header">
+          <h2>Top Countdown</h2>
+          <div class="chart-data chart-data-top">
+            <div class="date"></div>
+            <div>
+              Price: <span class="price"></span>
+              Max: <span class="deviation d-max"></span>
+              Expected: <span class="expected"></span>
+              Min: <span class="deviation d-min"></span>
+            </div>
+          </div>
+        </div>
+        <div class="chart-wrapper">
+          <table class="chart-data chart-data-overlay">
+            <tr>
+              <td>Date</td>
+              <td class="date"></td>
+            </tr>
+            <tr>
+              <td>Price</td>
+              <td class="price"></td>
+            </tr>
+            <tr>
+              <td>Max</td>
+              <td class="deviation d-max"></td>
+            </tr>
+            <tr>
+              <td>Expected</td>
+              <td class="expected"></td>
+            </tr>
+            <tr>
+              <td>Min</td>
+              <td class="deviation d-min"></td>
+            </tr>
+          </table>
+          <div id="basic_chart" class="chart">
+            <div class="chart-loading">
+              <div>Loading&hellip;</div>
+            </div>
+          </div>
+        </div>
+        <div class="slider-container">
+          <input type="range" id="basic_chart_range" class="chart-range" min="0" max="150" value="100">
+        </div>
+      </div>
+
+      <div class="footer">
+        <p class="true-til-not">
+          It's true until it's not.
+          <span class="take-a-while">But that might take a while.</span>
+        </p>
+        <p><a href="https://github.com/cilphex/bitcoin-never-look-back">Open source</a></p>
+      </div>
+    </div>
+  </body>
+
+  <script type="module" src="js/charts/tc/index.js"></script>
+</html>
