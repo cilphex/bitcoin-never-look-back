@@ -271,7 +271,8 @@ class RegressionChart {
 
     function mouseMove() {
       const mouse = d3.mouse(this)
-      const index = Math.round(xScale.invert(mouse[0]))
+      const date = xScale.invert(mouse[0])
+      const index = Math.round(date)
       const item = regressionData[index]
       const xPos = xScale(index)
 
