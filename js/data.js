@@ -5,6 +5,9 @@
 // range on the number of items present, rather than the difference
 // in min and max date in the items in this set
 const data = [
+  { date: "Feb 19, 2020", price: "9,609.4" },
+  { date: "Feb 18, 2020", price: "10,158.4" },
+  { date: "Feb 17, 2020", price: "9,701.4" },
   { date: "Feb 16, 2020", price: "9,932.3" },
   { date: "Feb 15, 2020", price: "9,907.7" },
   { date: "Feb 14, 2020", price: "10,333.0" },
