@@ -329,16 +329,30 @@ class RegressionChart {
   }
 
   rangeChange(e) {
-    const maxDays = this.mapInputRangeToDays(e.target.value)
+    rateLimit(this, 20, () => {
+      const maxDays = this.mapInputRangeToDays(e.target.value)
 
-    const { data, regressionData } = this.chartData
-    const maxRegressionNlb = regressionData[maxDays].regressionNlb
+      const { data, regressionData } = this.chartData
+      const maxRegressionNlb = regressionData[maxDays].regressionNlb
 
-    this.maxDays = maxDays
-    this.maxRegressionNlb = maxRegressionNlb
+      this.maxDays = maxDays
+      this.maxRegressionNlb = maxRegressionNlb
 
-    this.rescale()
+      this.rescale()
+    })
   }
+}
+
+function rateLimit(context, ms, fn) {
+  const lastTime = context[fn] || null
+  const time = new Date().getTime()
+
+  if (lastTime && time - lastTime < ms) {
+    return
+  }
+
+  context[fn] = time
+  fn()
 }
 
 export default RegressionChart
