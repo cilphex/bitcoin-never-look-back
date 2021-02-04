@@ -26,3 +26,8 @@ It may not work in some browsers.
 
 This code is deployed to bitcoin.craighammell.com using
 [Cloud Build](https://cloud.google.com/community/tutorials/automated-publishing-cloud-build).
+
+### React Version
+
+A react version of this project can be found here, but it is not yet as performant:
+[bitcoin-charts](https://github.com/cilphex/bitcoin-charts).
